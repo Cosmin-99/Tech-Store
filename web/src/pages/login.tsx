@@ -9,6 +9,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import { User } from '../models/User';
 import { getKeys } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
+import { userLogin } from '../endpoints/login';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,7 +46,7 @@ export const Login = () => {
 
     const handleSubmit = async (o: LoginUser) => {
         try {
-            //some login stuff
+            await userLogin(o.email, o.password)
             routeTo(urls.shop);
         }
         catch (error) {

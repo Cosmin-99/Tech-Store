@@ -8,6 +8,7 @@ import { FormFeedback } from '../components/Feedback';
 import { User } from '../models/User';
 import { getKeys } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
+import { userRegister } from '../endpoints/register';
 const useStyles = makeStyles((theme) => ({
     form: {
         marginTop: theme.spacing(6),
@@ -35,7 +36,7 @@ export const Register = () => {
     })
     const handleSubmit = async (o: User) => {
         try {
-            // some register stuff
+            await userRegister(o);
             routeTo(urls.shop);
         } catch (error) {
             setError(true);

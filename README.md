@@ -6,4 +6,4 @@ If you want to try out the web side just run `yarn install` , and after run `yar
 
 # SERVER
 
-To run the server , you first must run `npm install`, and to start the app just run `npm run dev`
+To run the server , you first must run `npm install`, and to start the app just run `npm run dev-watch`
