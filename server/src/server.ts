@@ -4,7 +4,8 @@ import morgan from 'morgan';
 import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import { router } from './routes/appRoutes';
+import { authRouter } from './routes/authRoutes';
+import { appRoutes } from './routes/appRoutes';
 dotenv.config();
 
 const app = express();
@@ -15,7 +16,8 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(router);
+app.use('/api/auth/',authRouter);
+app.use('/api/app/',appRoutes);
 
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from

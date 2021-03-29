@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { userLogin, userRegister } from "../controllers/authControllers";
+import multer from "multer";
+import { addCategory, getCategories } from "../controllers/appControllers";
 
-export const router: Router = Router();
+export const appRoutes = Router();
+const inMeoryStorage = multer.memoryStorage();
+const singleFileUpload = multer({ storage: inMeoryStorage })
 
-router.post("/api/auth/register",userRegister);
-router.post("/api/auth/login",userLogin);
+appRoutes.post("/add-category", singleFileUpload.single('image') ,addCategory)
+appRoutes.get("/categories", getCategories)
