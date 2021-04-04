@@ -1,10 +1,10 @@
 import { Container, Grid, makeStyles } from '@material-ui/core';
-import React from 'react';
 import { Route } from 'react-router-dom';
 import './App.css';
 import { Header } from './components/Header';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
+import { Shop } from './pages/shop';
 import { route, urls } from './utils/routing';
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -34,6 +34,11 @@ function App() {
             exact
             path={route(urls.register)}
             component={Register}
+          />
+          <Route
+            exact
+            path={route(urls.shop)}
+            component={Shop}
           />
         </Container>
       </Grid>

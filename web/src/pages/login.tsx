@@ -10,6 +10,8 @@ import { User } from '../models/User';
 import { getKeys } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
 import { userLogin } from '../endpoints/login';
+import GoogleLogin, { GoogleLoginResponse, } from 'react-google-login';
+import { loginWithGoogle } from '../services/user.service';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,6 +33,14 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(2),
     },
 }));
+const responseGoogle = async (response: GoogleLoginResponse) => {
+    if ((response as any).error) {
+
+    } else {
+        await loginWithGoogle(response.tokenId);
+        // console.log(response);
+    }
+}
 export const Login = () => {
     type LoginUser = Pick<User, "email" | "password">;
     const classes = useStyles();
@@ -79,7 +89,7 @@ export const Login = () => {
         </React.Fragment>
         <Form onSubmit={handleSubmit} subscription={{ submitting: true }} initialValues={user} validate={validate}>
             {({ handleSubmit, submitting, form }) => (
-                
+
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>
                     <Field name={keys.email}>
                         {({ input, meta }) => (
@@ -137,12 +147,18 @@ export const Login = () => {
                         or join with the following
                     </Typography>
                     <div style={{ display: "flex", justifyContent: "space-evenly", paddingTop: "20px", paddingBottom: "20px" }}>
-                        <IconButton
-                            style={{ backgroundColor: "#dd4b39" }} title="Google">
-                            <SvgIcon fontSize="large" style={{ color: "white" }}>
+                        <GoogleLogin
+                            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
+                            onSuccess={responseGoogle as any}
+                            onFailure={responseGoogle}
+
+                            render={props => <IconButton style={{ backgroundColor: "#dd4b39" }} title="Google" onClick={props.onClick}> <SvgIcon fontSize="large" style={{ color: "white" }}>
                                 <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Google icon</title><path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" /></svg>
-                            </SvgIcon>
-                        </IconButton>
+                            </SvgIcon></IconButton>}
+                        />
+                        {/* <SvgIcon fontSize="large" style={{ color: "white" }}>
+                                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Google icon</title><path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" /></svg>
+                            </SvgIcon> */}
                         <IconButton
                             style={{ backgroundColor: "#3b5998" }} title="Facebook">
                             <FacebookIcon fontSize="large" style={{ color: "white" }} />
