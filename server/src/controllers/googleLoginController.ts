@@ -12,7 +12,7 @@ export const googleLogin = async (req: Request, res: Response): Promise<Response
         const { tokenId } = req.body; //will take from body, the tokenId
 
         const response: LoginTicket = await client.verifyIdToken({ idToken: tokenId, audience: process.env.GOOGLE_CLIENT_ID }) //verify token
-        const { email_verified, name, email } = response.getPayload() as TokenPayload; //destructure data from payload
+        const { email_verified, given_name, family_name, email } = response.getPayload() as TokenPayload; //destructure data from payload
 
         if (email_verified) {// if email is verified
             const user = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]); //I'm looking for the user in the database 
@@ -33,9 +33,9 @@ export const googleLogin = async (req: Request, res: Response): Promise<Response
                 })
 
             } else {// if is not into the database, will create credentials for that user
-                const firstName = name?.substr(0, name.indexOf(" "))
-                const lastName = name?.substr(name.indexOf(" ") + 1)
-                const password = email as string + process.env.TOKEN_ENCRYPTION as string
+                const firstName = family_name;
+                const lastName = given_name;
+                const password = email as string + process.env.TOKEN_ENCRYPTION as string;
                 const hashedPassword = bcrypt.hash(password, 12);
 
                 const newUser: QueryResult = await pool.query(`
