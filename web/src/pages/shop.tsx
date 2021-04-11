@@ -35,14 +35,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 export const Shop = () => {
-    const [dataIsChecked, setDataIsChecked] = useState(false);
     const classes = useStyles();
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
     const [data, setData] = useState<Category[]>([]);
-    useLoadData(async () => {
+    const { loading } = useLoadData(async () => {
         const categories = (await getCategories()).data;
         setData(categories);
-        setDataIsChecked(true);
     }, []);
 
     const CategoryDisplay = (p: {
@@ -69,7 +67,7 @@ export const Shop = () => {
         </Card>
     }
 
-    if (!dataIsChecked) {
+    if (loading) {
         return <LoadingComponent />
     }
 

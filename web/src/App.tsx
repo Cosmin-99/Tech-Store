@@ -1,5 +1,5 @@
 import { Container, Grid, makeStyles } from '@material-ui/core';
-import { Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { Header } from './components/Header';
 import { Login } from './pages/login';
@@ -8,7 +8,7 @@ import { Shop } from './pages/shop';
 import { route, urls } from './utils/routing';
 const useStyles = makeStyles((theme) => ({
   container: {
-    minHeight: "100vh",
+    // minHeight: "100vh",
     maxWidth: "100%",
     padding: 0,
     marginBottom: "20px",
@@ -18,28 +18,33 @@ const useStyles = makeStyles((theme) => ({
     },
   }
 }));
+
 function App() {
+
   const classes = useStyles();
   return (
     <Grid container direction="column" alignItems="center">
       <Grid item container alignItems="stretch" direction="column">
         <Header />
         <Container className={classes.container}>
-          <Route
-            exact
-            path={route(urls.login)}
-            component={Login}
-          />
-          <Route
-            exact
-            path={route(urls.register)}
-            component={Register}
-          />
-          <Route
-            exact
-            path={route(urls.shop)}
-            component={Shop}
-          />
+          <Switch>
+            <Route
+              exact
+              path={route(urls.login)}
+              component={Login}
+            />
+            <Route
+              exact
+              path={route(urls.register)}
+              component={Register}
+            />
+            <Route
+              exact
+              path={route(urls.shop)}
+              component={Shop}
+            />
+            <Redirect from="/" to={route(urls.shop)} />
+          </Switch>
         </Container>
       </Grid>
     </Grid>
