@@ -21,15 +21,16 @@ export const facebookLogin = async (req: Request, res: Response): Promise<Respon
         if (user.rows.length) {// if he is already in database
             const token = jwt.sign({// create a login token
                 email: user.rows[0].email,
-                firstName: user.rows[0].firstName,
-                lastName: user.rows[0].lastName
+                firstName: user.rows[0].firstname,
+                lastName: user.rows[0].lastname
             },
                 process.env.TOKEN_ENCRYPTION as string)
 
             return res.status(200).json({
-                firstName: user.rows[0].firstName,
-                lastName: user.rows[0].lastName,
+                firstName: user.rows[0].firstname,
+                lastName: user.rows[0].lastname,
                 email: email,
+                role: user.rows[0].role,
                 token
             })
         } else {// if is not into the database, will create credentials for that user
@@ -37,14 +38,16 @@ export const facebookLogin = async (req: Request, res: Response): Promise<Respon
             const firstName = name.substr(name.indexOf(" ") + 1);
             const password = email as string + process.env.TOKEN_ENCRYPTION as string;
             const hashedPassword = bcrypt.hash(password, 12);
+            const role = "user"
 
             const newUser: QueryResult = await pool.query(`
-    INSERT INTO Users ("firstName", "lastName", "email", "password") VALUES ($1, $2, $3, $4)
+    INSERT INTO Users ("firstname", "lastname", "email", "role", "password") VALUES ($1, $2, $3, $4, $5)
     `,
                 [
                     firstName,
                     lastName,
                     email,
+                    role,
                     hashedPassword
                 ])
 
@@ -60,6 +63,7 @@ export const facebookLogin = async (req: Request, res: Response): Promise<Respon
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
+                role: role,
                 token
             })
         }

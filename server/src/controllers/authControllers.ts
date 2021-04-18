@@ -11,20 +11,23 @@ export const userRegister = async (req: Request, res: Response): Promise<Respons
 
         if (!user.rows.length) {
             const hashedPassword = await bcrypt.hash(password, 12);
+            const role = "user";
             const response: QueryResult = await pool.query(`
-        INSERT INTO Users ("firstName", "lastName", "email", "password") VALUES ($1, $2, $3, $4)
+        INSERT INTO Users ("firstname", "lastname", "email", "role", "password") VALUES ($1, $2, $3, $4, $5)
         `,
                 [
                     firstName,
                     lastName,
                     email,
+                    role,
                     hashedPassword
                 ]);
 
             const token = jwt.sign({
                 firstName: firstName,
                 lastName: lastName,
-                email: email
+                email: email,
+                role: role
             },
                 process.env.TOKEN_ENCRYPTION as string,
             );
@@ -33,18 +36,19 @@ export const userRegister = async (req: Request, res: Response): Promise<Respons
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
+                role: role,
                 token
             })
         } else if (user.rows[0].email === email) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: "This email already exists in database !!!"
             })
         } else {
-            return res.status(404).json({ message: "Something went wrong when you try to register. Please try again !!!" })
+            return res.status(400).json({ message: "Something went wrong when you try to register. Please try again !!!" })
         }
 
     } catch (err) {
-        return res.status(404).json({ message: "Something went wrong when you try to register. Please try again !!!" })
+        return res.status(400).json({ message: "Something went wrong when you try to register. Please try again !!!" })
     }
 }
 
@@ -55,7 +59,7 @@ export const userLogin = async (req: Request, res: Response) => {
         const response = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
 
         if (!response) {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: "Invalid credentials, couldn,t log you in !!!"
             })
         }
@@ -69,16 +73,17 @@ export const userLogin = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign({
-            firstName: response.rows[0].firstName,
+            firstName: response.rows[0].firstname,
             email: response.rows[0].email
         },
             process.env.TOKEN_ENCRYPTION as string)
 
 
         return res.status(200).json({
-            firstName: response.rows[0].firstName,
-            lastName: response.rows[0].lastName,
+            firstName: response.rows[0].firstname,
+            lastName: response.rows[0].lastname,
             email: response.rows[0].email,
+            role: response.rows[0].role,
             token
         })
 
