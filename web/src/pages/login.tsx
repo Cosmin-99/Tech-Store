@@ -39,7 +39,7 @@ const responseGoogle = async (response: GoogleLoginResponse) => {
 
     } else {
         await loginWithGoogle(response.tokenId);
-        // console.log(response);
+         console.log(response);
     }
 }
 export const Login = () => {

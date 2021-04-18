@@ -36,7 +36,9 @@ export const googleLogin = async (req: Request, res: Response): Promise<Response
                 const firstName = family_name;
                 const lastName = given_name;
                 const password = email as string + process.env.TOKEN_ENCRYPTION as string;
-                const hashedPassword = bcrypt.hash(password, 12);
+                const hashedPassword = await bcrypt.hash(password, 12);
+                console.log(password);
+                console.log(hashedPassword);
 
                 const newUser: QueryResult = await pool.query(`
             INSERT INTO Users ("firstName", "lastName", "email", "password") VALUES ($1, $2, $3, $4)
