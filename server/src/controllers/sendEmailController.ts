@@ -7,6 +7,7 @@ import { pool } from "../database/database";
 export const sendEmail = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
+        const urlKey = crypt(process.env.TOKEN_ENCRYPTION as string, email)
 
         const user: QueryResult = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]); //get user data
         const resetPasswordRequest = await pool.query(` 
