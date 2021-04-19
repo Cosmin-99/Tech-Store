@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import { authRouter } from './routes/authRoutes';
 import { appRoutes } from './routes/appRoutes';
 import cors from 'cors';
+import { apiErrorHandler } from './error/apiErrorHandler';
 dotenv.config();
 
 const app = express();
@@ -18,8 +19,16 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(function (req, res, next) {
+    console.log("Middleware");
+    next();
+});
+
 app.use('/api/auth/', authRouter);
 app.use('/api/app/', appRoutes);
+
+//this should be among the last of the routes cuz of the next() function
+app.use(apiErrorHandler)
 
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from

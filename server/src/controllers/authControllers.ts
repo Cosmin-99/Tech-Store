@@ -1,8 +1,11 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import { QueryResult } from "pg";
 import { pool } from "../database/database";
 import jwt from "jsonwebtoken";
+import { nextTick } from "node:process";
+import { ApiError } from "../error/ApiError";
+import { HttpStatusCode } from "../error/HttpStatusCodes";
 
 export const userRegister = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -52,24 +55,29 @@ export const userRegister = async (req: Request, res: Response): Promise<Respons
     }
 }
 
-export const userLogin = async (req: Request, res: Response) => {
+export const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
+        if (!password) {
+            next(new ApiError(HttpStatusCode.BadRequest, "Missing Password"));
+            return;
+        }
+        if (!email) {
+            next(new ApiError(HttpStatusCode.BadRequest, "Missing Email"));
+            return;
 
-        const response = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
-
-        if (!response) {
-            return res.status(400).json({
-                message: "Invalid credentials, couldn,t log you in !!!"
-            })
+        }
+        const response = await pool.query("SELECT * FROM Users WHERE email = $1", [email]);
+        if (!response || response.rowCount === 0) {
+            next(new ApiError(HttpStatusCode.BadRequest, "Invalid Credentials"));
+            return;
         }
 
         const isValidPassword = await bcrypt.compare(password, response.rows[0].password);
 
         if (!isValidPassword) {
-            return res.status(400).json({
-                message: "Invalid credentials, couldn't log you in !!!"
-            })
+            next(new ApiError(HttpStatusCode.BadGateway, "Invalid username of password"))
+            return;
         }
 
         const token = jwt.sign({
@@ -88,8 +96,8 @@ export const userLogin = async (req: Request, res: Response) => {
         })
 
     } catch (err) {
-        return res.status(500).json({
-            message: "Logging in failed!"
-        })
+        console.log(err);
+        next(err);
+        return;
     }
 }

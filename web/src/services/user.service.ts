@@ -10,3 +10,8 @@ export const userLogin = async (email: string, password: string) => {
 export const loginWithGoogle = async (tokenId: string) => {
     return axios.post(endpointURL + "/auth/google-login", { tokenId });
 }
+export const sendResetEmail = async (postData: {
+    email: string
+}) => {
+    return axios.post(endpointURL + "/auth/reset-password", postData);
+}
