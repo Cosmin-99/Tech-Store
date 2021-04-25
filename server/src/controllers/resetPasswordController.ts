@@ -21,7 +21,7 @@ export const resetPassword = async (req: Request, res: Response) => {
                 message: "New password has been updated !!!"
             })
         } else {
-            res.status(401).json({
+            return res.status(401).json({
                 message: "This URL it was already used once or no password reset request has been registered !!!"
             })
         }

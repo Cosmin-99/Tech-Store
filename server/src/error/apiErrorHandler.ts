@@ -5,6 +5,11 @@ export function apiErrorHandler(err: any, req: Request, res: Response, next: Nex
     if (err instanceof ApiError) {
         return res.status(err.statusCode).json({ message: err.message });
     }
+    if (typeof (err) === "string") {
+        return res.status(500).json({
+            message: err,
+        })
+    }
     return res.status(500).json({
         message: "Something just went wrong ... 😟"
     })

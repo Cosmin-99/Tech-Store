@@ -2,57 +2,35 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { pool } from "../database/database";
 import bcrypt from "bcryptjs";
-
+import jwt from "jsonwebtoken";
 export function localStrategy() {
-    passport.use('local', new Strategy(async (email: string, password: string, done) => {
+    passport.use(new Strategy({
+        usernameField:"email",
+        passwordField:"password"
+    },async (email, password, done) => {
         const response = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
 
         if (!response) {
-            return done(null, false, {
-                message: "Invalid credentials, couldn,t log you in !!!"
-            })
+            done(null, false);
         }
-
         const isValidPassword = await bcrypt.compare(password, response.rows[0].password);
 
+        const token = jwt.sign({
+            firstName: response.rows[0].firstname,
+            email: response.rows[0].email
+        },
+            process.env.TOKEN_ENCRYPTION as string)
+        
         if (!isValidPassword) {
-            return done(null, false, {
-                message: "Invalid credentials, couldn't log you in !!!"
-            })
+            done(null, false);
         }
 
-        return done(null, {
-            email: response.rows[0].email,
+        done(null, {
             firstName: response.rows[0].firstname,
-            lastName: response.rows[0].lastname
+            lastName: response.rows[0].lastname,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            token
         })
     }));
 }
-
-// export const loginStrategy = new LocalStrategy.Strategy((email: string, password: string, done) => {
-
-//     const loginAttempt = async () => {
-//         const response = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
-
-//         if (!response) {
-//             return done(null, false, {
-//                 message: "Invalid credentials, couldn,t log you in !!!"
-//             })
-//         }
-
-//         const isValidPassword = await bcrypt.compare(password, response.rows[0].password);
-
-//         if (!isValidPassword) {
-//             return done(null, false, {
-//                 message: "Invalid credentials, couldn't log you in !!!"
-//             })
-//         }
-
-//         return done(null, {
-//             email: response.rows[0].email,
-//             firstName: response.rows[0].firstname,
-//             lastName: response.rows[0].lastname
-//         })
-//     }
-//     loginAttempt();
-// })

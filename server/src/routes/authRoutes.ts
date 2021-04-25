@@ -9,7 +9,9 @@ import { sendEmail } from "../controllers/sendEmailController";
 export const authRouter: Router = Router();
 
 authRouter.post("/register", userRegister);
-authRouter.post("/login", passport.authenticate('local'), userLogin);
+authRouter.post("/login", passport.authenticate('local'), (req, res) => {
+    res.json(req.user);
+});
 authRouter.post("/google-login", googleLogin);
 authRouter.post("/facebook-login", facebookLogin);
 authRouter.post("/reset-password", sendEmail)
