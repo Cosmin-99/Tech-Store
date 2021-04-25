@@ -166,7 +166,7 @@ export const Login = () => {
                             autoLoad={false}
                             fields="name"
                             scope="public_profile"
-                            // callback={fbCallback}
+                            callback={(props: any) => console.log(props)}
 
                             render={(props: any) => {
                                 return <IconButton
@@ -181,9 +181,7 @@ export const Login = () => {
             )}
         </Form>
         <Typography align="center">
-            <Link underline="always" style={{ cursor: "pointer" }} onClick={() => {
-                routeTo(urls.forgotPassword);
-            }}>
+            <Link underline="always" style={{ cursor: "pointer" }} onClick={() => routeTo(urls.forgotPassword)}>
                 Forgot password?
             </Link>
         </Typography>

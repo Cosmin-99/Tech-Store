@@ -2,6 +2,7 @@ import { Container, Grid, makeStyles } from '@material-ui/core';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { Header } from './components/Header';
+import { ForgotPassword } from './pages/forgot-password';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
 import { Shop } from './pages/shop';
@@ -42,6 +43,11 @@ function App() {
               exact
               path={route(urls.shop)}
               component={Shop}
+            />
+            <Route
+              exact
+              path={route(urls.forgotPassword)}
+              component={ForgotPassword}
             />
             <Redirect from="/" to={route(urls.shop)} />
           </Switch>
