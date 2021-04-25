@@ -7,6 +7,9 @@ import dotenv from 'dotenv';
 import { authRouter } from './routes/authRoutes';
 import { appRoutes } from './routes/appRoutes';
 import cors from 'cors';
+import passport, { session } from 'passport';
+import { passportConfig } from './strategies/passport';
+
 dotenv.config();
 
 const app = express();
@@ -17,6 +20,12 @@ app.use(morgan('tiny'));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// app.use(session({ pauseStream: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passportConfig();
 
 app.use('/api/auth/', authRouter);
 app.use('/api/app/', appRoutes);

@@ -1,4 +1,4 @@
-const crypt = (salt: string, text: string) => {
+export const crypt = (salt: string, text: string) => {
     const textToChars = (text: string) => text.split("").map((c) => c.charCodeAt(0));
     const byteHex = (n: number) => ("0" + Number(n).toString(16)).substr(-2);
     const applySaltToChar = (code: any) => textToChars(salt).reduce((a, b) => a ^ b, code);
@@ -11,7 +11,7 @@ const crypt = (salt: string, text: string) => {
       .join("");
   };
   
-  const decrypt = (salt: any, encoded: any) => {
+export const decrypt = (salt: any, encoded: any) => {
     const textToChars = (text: string) => text.split("").map((c) => c.charCodeAt(0));
     const applySaltToChar = (code: any) => textToChars(salt).reduce((a, b) => a ^ b, code);
     return encoded.match(/.{1,2}/g)

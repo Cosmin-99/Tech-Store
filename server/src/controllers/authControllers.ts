@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { QueryResult } from "pg";
 import { pool } from "../database/database";
 import jwt from "jsonwebtoken";
+import LocalStrategy from "passport-local";
 
 export const userRegister = async (req: Request, res: Response): Promise<Response> => {
     try {

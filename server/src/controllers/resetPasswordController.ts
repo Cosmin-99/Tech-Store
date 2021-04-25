@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { QueryResult } from "pg";
 import { pool } from "../database/database";
 import bcrypt from "bcryptjs";
+import { decrypt } from "../utils/utilsFunctions";
 
 export const resetPassword = async (req: Request, res: Response) => {
     try {

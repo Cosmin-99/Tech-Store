@@ -3,10 +3,12 @@ import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { QueryResult } from "pg";
 import { pool } from "../database/database";
+import { crypt } from "../utils/utilsFunctions";
 
 export const sendEmail = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
+        console.log(req.user);
         const urlKey = crypt(process.env.TOKEN_ENCRYPTION as string, email)
 
         const user: QueryResult = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]); //get user data
