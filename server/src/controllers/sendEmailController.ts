@@ -3,13 +3,11 @@ import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { QueryResult } from "pg";
 import { pool } from "../database/database";
-import { crypt } from "../utils/utilsFunctions";
+import jwt from "jsonwebtoken";
 
 export const sendEmail = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
-        console.log(req.user);
-        const urlKey = crypt(process.env.TOKEN_ENCRYPTION as string, email)
 
         const user: QueryResult = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]); //get user data
         const resetPasswordRequest = await pool.query(` 
@@ -20,6 +18,12 @@ export const sendEmail = async (req: Request, res: Response) => {
                 user.rows[0].lastname,
                 email
             ]); //and save his request for reset password into database
+
+        const urlToken = jwt.sign({
+            email: email,
+        }, process.env.TOKEN_ENCRYPTION as string, {
+            expiresIn: "1m"
+        })
 
         //create reusable transporter object using the default SMPT transport
         const transporter = nodemailer.createTransport({
