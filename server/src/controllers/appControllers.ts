@@ -53,3 +53,26 @@ export const getCategories = async (req: Request, res: Response): Promise<Respon
         return res.status(404).json(err)
     }
 }
+
+export const getSubcategoryById = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const response: QueryResult = await pool.query(`
+        SELECT subcategories.id,
+            subcategories.name,
+            subcategories.categoryid,
+            subcategories.imageurl,
+            categories.name as categoryName
+    
+        FROM subcategories
+            LEFT JOIN categories ON subcategories.categoryid = categories.id
+        WHERE categoryid = $1
+        `, [id]);
+
+        console.log(response.rows);
+        return res.status(200).json(response.rows)
+
+    } catch (e) {
+        next(e);
+    }
+}
