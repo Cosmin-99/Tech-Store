@@ -1,5 +1,5 @@
 import { Typography, Link, FormControlLabel, Checkbox, IconButton, SvgIcon, makeStyles } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { AppForm } from '../components/AppForm';
 import { TechButton } from '../components/TechButton';
@@ -7,12 +7,13 @@ import { TechInput } from '../components/TechInput';
 import { FormFeedback } from '../components/Feedback';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import { User } from '../models/User';
-import { getKeys } from '../utils/utilFunctions';
+import { getKeys, storeUserInStorage } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
-import { userLogin } from '../endpoints/login';
 import GoogleLogin, { GoogleLoginResponse, } from 'react-google-login';
-import { loginWithGoogle } from '../services/user.service';
+import { loginWithGoogle, userLogin } from '../services/user.service';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import { headers } from '../services/config';
+import { UserContext } from '../contexts/userContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,13 +40,14 @@ const responseGoogle = async (response: GoogleLoginResponse) => {
 
     } else {
         await loginWithGoogle(response.tokenId);
-         console.log(response);
+        console.log(response);
     }
 }
 export const Login = () => {
     type LoginUser = Pick<User, "email" | "password">;
     const classes = useStyles();
     const { routeTo } = useRouting();
+    const [, setUserContext] = useContext(UserContext);
     const [user,] = useState<LoginUser>({ password: "", email: "" });
     const [error, setError] = useState(false);
     const [stringError, setStringError] = useState("");
@@ -57,7 +59,10 @@ export const Login = () => {
 
     const handleSubmit = async (o: LoginUser) => {
         try {
-            await userLogin(o.email, o.password)
+            const user = await userLogin(o.email, o.password)
+            storeUserInStorage(user.data);
+            setUserContext(user.data);
+            headers.Authorization = `Bearer ${user.data.token}`;
             routeTo(urls.shop);
         }
         catch (error) {

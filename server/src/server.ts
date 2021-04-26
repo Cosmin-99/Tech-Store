@@ -21,7 +21,6 @@ app.use(cors())
 app.use(morgan('tiny'));
 app.use(json());
 app.use(urlencoded({ extended: true }));
-app.use(session({ secret: "very secret",resave: false, saveUninitialized: false}));
 app.use(cookieParser());
 
 // app.use(session({ pauseStream: true}));
@@ -42,6 +41,11 @@ app.use('/api/app/', appRoutes);
 app.use(apiErrorHandler)
 
 
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
 //in case that no endpoint matches the request
 app.use("*", (req, res) => {
     res.status(404).send("Not found , unlucky");

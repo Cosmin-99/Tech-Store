@@ -3,8 +3,6 @@ import bcrypt from "bcryptjs";
 import { QueryResult } from "pg";
 import { pool } from "../database/database";
 import jwt from "jsonwebtoken";
-import LocalStrategy from "passport-local";
-import { nextTick } from "node:process";
 import { ApiError } from "../error/ApiError";
 import { HttpStatusCode } from "../error/HttpStatusCodes";
 
@@ -80,13 +78,11 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
             next(new ApiError(HttpStatusCode.BadGateway, "Invalid username of password"))
             return;
         }
-
         const token = jwt.sign({
             firstName: response.rows[0].firstname,
             email: response.rows[0].email
         },
             process.env.TOKEN_ENCRYPTION as string)
-
 
         return res.status(200).json({
             firstName: response.rows[0].firstname,

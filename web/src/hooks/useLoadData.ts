@@ -7,13 +7,11 @@ export function useLoadData(fn: () => Promise<void>, deps: readonly any[] = []) 
             try {
                 await fn();
             } catch (e) {
+                //maybe some error handling in here
                 console.log(e);
             }
             setLoading(false);
         })();
-        fn().catch(e => {
-            console.log(e);
-        });
         // eslint-disable-next-line
     }, deps);
 

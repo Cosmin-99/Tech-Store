@@ -11,7 +11,7 @@ import { LoadingComponent } from '../components/LoadingComponent';
 const useStyles = makeStyles((theme) => ({
     categoryText: {
         userSelect: "none",
-        fontFamily: "proxima-nova-bold",
+        // fontFamily: "proxima-nova-bold",
         marginTop: "40px",
         marginBottom: "40px",
         textTransform: "uppercase",
@@ -39,9 +39,11 @@ export const Shop = () => {
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
     const [data, setData] = useState<Category[]>([]);
     const { loading } = useLoadData(async () => {
-        const categories = (await getCategories()).data;
+        const req = await getCategories();
+        const categories = req.data;
         setData(categories);
     }, []);
+
 
     const CategoryDisplay = (p: {
         category: Category

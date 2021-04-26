@@ -7,6 +7,7 @@ import { Login } from './pages/login';
 import { Register } from './pages/register';
 import { Shop } from './pages/shop';
 import { route, urls } from './utils/routing';
+import { UserContextProvider } from "./contexts/userContext"
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -26,32 +27,34 @@ function App() {
   return (
     <Grid container direction="column" alignItems="center">
       <Grid item container alignItems="stretch" direction="column">
-        <Header />
-        <Container className={classes.container}>
-          <Switch>
-            <Route
-              exact
-              path={route(urls.login)}
-              component={Login}
-            />
-            <Route
-              exact
-              path={route(urls.register)}
-              component={Register}
-            />
-            <Route
-              exact
-              path={route(urls.shop)}
-              component={Shop}
-            />
-            <Route
-              exact
-              path={route(urls.forgotPassword)}
-              component={ForgotPassword}
-            />
-            <Redirect from="/" to={route(urls.shop)} />
-          </Switch>
-        </Container>
+        <UserContextProvider>
+          <Header />
+          <Container className={classes.container}>
+            <Switch>
+              <Route
+                exact
+                path={route(urls.login)}
+                component={Login}
+              />
+              <Route
+                exact
+                path={route(urls.register)}
+                component={Register}
+              />
+              <Route
+                exact
+                path={route(urls.shop)}
+                component={Shop}
+              />
+              <Route
+                exact
+                path={route(urls.forgotPassword)}
+                component={ForgotPassword}
+              />
+              <Redirect from="/" to={route(urls.shop)} />
+            </Switch>
+          </Container>
+        </UserContextProvider>
       </Grid>
     </Grid>
   );

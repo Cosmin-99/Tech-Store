@@ -5,7 +5,6 @@ import { facebookLogin } from "../controllers/facebookLoginController";
 import { googleLogin } from "../controllers/googleLoginController";
 import { resetPassword } from "../controllers/resetPasswordController";
 import { sendEmail } from "../controllers/sendEmailController";
-
 export const authRouter: Router = Router();
 
 authRouter.post("/register", userRegister);

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
-import { AppBar, Dialog, DialogContent, IconButton, Slide, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Dialog, DialogContent, Grid, IconButton, MenuItem, Slide, Toolbar, Typography } from '@material-ui/core';
 import { Login } from '../pages/login';
 import { MenuDrawer } from './MenuDrawer';
 import { TechButton } from './TechButton';
@@ -10,6 +10,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { SearchBarMenu } from './SearchBarMenu';
 import { useLocation } from 'react-router-dom';
+import { IsAuth, IsUnauth } from './IsAuth';
+import { TechMenu } from './TechMenu';
+import { UserContext } from '../contexts/userContext';
+import { clearUserInStorage } from '../utils/utilFunctions';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -97,10 +101,12 @@ const Transition = React.forwardRef(function Transition(
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+type AnchorElement = null | HTMLElement;
 export const Header = () => {
     const classes = useStyles();
-
     const [open, setOpen] = React.useState(false);
+    const [, setUser] = useContext(UserContext);
+    const [anchorEl, setAnchorEl] = React.useState<AnchorElement>(null);
     const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
     const handleOpen = () => {
         setOpen(true);
@@ -110,6 +116,23 @@ export const Header = () => {
     }
     const handleToggleDrawer = () => {
         setOpenDrawer(!openDrawer);
+    }
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    }
+
+    const handleViewProfile = () => {
+        // routeTo(urls.userProfile);
+        handleCloseMenu();
+    }
+
+    const handleLogout = async () => {
+        clearUserInStorage();
+        setUser(null!);
+        handleCloseMenu();
     }
 
     const location = useLocation<Location>();
@@ -149,17 +172,48 @@ export const Header = () => {
                     Meniu
                 </Typography>
                 <div>
-                    <TechButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleOpen}
-                        color="inherit"
-                        disableRipple
-                        startIcon={<AccountCircle />}
-                    >
-                        Login
-                    </TechButton>
+                    <IsAuth>
+                        <Grid container alignItems="center" className={classes.userGrid}>
+                            <Typography variant="caption" className={classes.savedProducts} onClick={() => {
+                                // routeTo(urls.favorite);
+                            }}>
+                                {`Produse Favorite (${5})`}
+                            </Typography>
+                            <TechButton
+                                aria-controls="menu"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="inherit"
+                                disableRipple
+                                startIcon={<AccountCircle />}
+                            >
+                                Profile
+                            </TechButton>
+                            <TechMenu
+                                id="customized-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleCloseMenu}
+                            >
+                                <MenuItem onClick={handleViewProfile}>Profile</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            </TechMenu>
+                        </Grid>
+                    </IsAuth>
+                    <IsUnauth>
+                        <TechButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpen}
+                            color="inherit"
+                            disableRipple
+                            startIcon={<AccountCircle />}
+                        >
+                            Login
+                        </TechButton>
+                    </IsUnauth>
                 </div>
             </Toolbar>
         </AppBar>

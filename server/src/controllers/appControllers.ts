@@ -1,9 +1,8 @@
-import { Response, Request } from 'express'
+import { Response, Request, NextFunction } from 'express'
 import { pool } from '../database/database'
 import azureStorage from 'azure-storage'
 import getStream from 'into-stream'
 import { QueryResult } from 'pg';
-
 interface MulterRequest extends Request {
     file: any;
 }
@@ -45,6 +44,7 @@ export const addCategory = async (req: Request, res: Response): Promise<Response
 
 export const getCategories = async (req: Request, res: Response): Promise<Response> => {
     try {
+        console.log(req.user);
         const response = await pool.query('SELECT * FROM Categories')
 
         return res.status(200).json(response.rows)

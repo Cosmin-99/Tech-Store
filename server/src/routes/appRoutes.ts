@@ -1,6 +1,7 @@
 import { Router } from "express";
 import multer, { Multer, StorageEngine } from "multer";
 import { addCategory, getCategories } from "../controllers/appControllers";
+import { tokenMiddleWare } from "../utils/tokenMiddleware";
 
 export const appRoutes: Router = Router();
 const inMeoryStorage: StorageEngine = multer.memoryStorage();
