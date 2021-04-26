@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { userLogin, userRegister } from "../controllers/authControllers";
+import { tokenVerification } from "../controllers/checkToken";
 import { facebookLogin } from "../controllers/facebookLoginController";
 import { googleLogin } from "../controllers/googleLoginController";
 import { resetPassword } from "../controllers/resetPasswordController";
@@ -13,5 +14,6 @@ authRouter.post("/login", passport.authenticate('local'), (req, res) => {
 });
 authRouter.post("/google-login", googleLogin);
 authRouter.post("/facebook-login", facebookLogin);
-authRouter.post("/reset-password", sendEmail)
-authRouter.post("/reset-password/:urlKey", resetPassword)
+authRouter.post("/reset-password", sendEmail);
+authRouter.post("/reset-password/:urlKey", resetPassword);
+authRouter.post("/verify-token", tokenVerification);

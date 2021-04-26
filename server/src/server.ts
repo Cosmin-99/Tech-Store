@@ -8,7 +8,6 @@ import { authRouter } from './routes/authRoutes';
 import { appRoutes } from './routes/appRoutes';
 import cors from 'cors';
 import passport from 'passport';
-import session from 'express-session';
 import { passportConfig } from './strategies/passport';
 
 import { apiErrorHandler } from './error/apiErrorHandler';
