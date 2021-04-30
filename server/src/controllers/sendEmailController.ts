@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { QueryResult } from "pg";
@@ -51,5 +51,36 @@ export const sendEmail = async (req: Request, res: Response) => {
 
     } catch (err) {
         return res.status(400).json(err)
+    }
+}
+
+export const sendEmailProviders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD
+            },
+            debug: false,
+            logger: true
+        })
+
+        const info: Promise<Mail> = await transporter.sendMail({
+            from: '"Tech Store support team" <support@techstore.com>',
+            to: email,
+            subject: "Create Provider Account",
+            text: "Click here to create a provider account to sell your products!!!",
+            html: "<p>Click here to create a provider account to sell your products!!!</p>"
+        })
+
+        return res.status(200).json({
+            message: "Email Sent!"
+        })
+
+    } catch (err) {
+        next(err)
     }
 }
