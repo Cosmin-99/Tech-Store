@@ -12,6 +12,8 @@ export const urls = {
     register: () => "/register",
     forgotPassword: () => "/reset-password",
     shop: () => "/shop",
+    subcategory: (p: { id: string }) => `/shop/category/${p.id}`,
+    product: (p: { id: string }) => `/shop/products/${p.id}`
 };
 
 export function routeTo(p: H.History, fn: () => string): void

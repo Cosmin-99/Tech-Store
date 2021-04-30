@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { User } from '../models/User';
-import { endpointURL } from './config';
+import { endpointURL, headers } from './config';
 export const userLogin = async (email: string, password: string): Promise<AxiosResponse<User>> => {
     const credentials = {
         email: email,
@@ -18,4 +18,7 @@ export const sendResetEmail = async (postData: {
     email: string
 }) => {
     return axios.post(endpointURL + "/auth/reset-password", postData);
+}
+export const verifyToken = async () => {
+    return axios.post(endpointURL + "/auth/verify-token", null, { headers });
 }

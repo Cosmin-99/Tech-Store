@@ -6,6 +6,8 @@ import { getCategories } from '../services/categories.service';
 // import { getPromotions } from '../services/promotions.service';
 // import { Promotion } from '../models/Promotion';
 import { LoadingComponent } from '../components/LoadingComponent';
+import { useTitle } from '../hooks/useTitle';
+import { urls, useRouting } from '../utils/routing';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,9 +37,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 export const Shop = () => {
+    useTitle("Shop");
+
     const classes = useStyles();
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
     const [data, setData] = useState<Category[]>([]);
+    const { routeTo } = useRouting();
     const { loading } = useLoadData(async () => {
         const req = await getCategories();
         const categories = req.data;
@@ -49,7 +54,9 @@ export const Shop = () => {
         category: Category
     }) => {
         const { category } = p;
-        return <Card className={classes.categoryDisplay} >
+        return <Card className={classes.categoryDisplay} onClick={() => {
+            routeTo(urls.subcategory, { id: category.id.toString() })
+        }}>
             <CardContent>
                 <div style={{
                     display: "flex",

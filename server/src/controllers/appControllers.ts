@@ -68,6 +68,12 @@ export const getSubcategoryById = async (req: Request, res: Response, next: Next
             LEFT JOIN categories ON subcategories.categoryid = categories.id
         WHERE categoryid = $1
         `, [id]);
+        const obj = {
+            categoryName:"",
+            subcategories:[{
+                
+            }]
+        }
 
         console.log(response.rows);
         return res.status(200).json(response.rows)

@@ -14,6 +14,7 @@ import { loginWithGoogle, userLogin } from '../services/user.service';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { headers } from '../services/config';
 import { UserContext } from '../contexts/userContext';
+import { useTitle } from '../hooks/useTitle';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,6 +45,7 @@ const responseGoogle = async (response: GoogleLoginResponse) => {
     }
 }
 export const Login = () => {
+    useTitle("Login");
     type LoginUser = Pick<User, "email" | "password">;
     const classes = useStyles();
     const { routeTo } = useRouting();

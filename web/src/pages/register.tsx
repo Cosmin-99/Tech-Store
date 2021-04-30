@@ -9,6 +9,7 @@ import { User } from '../models/User';
 import { getKeys } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
 import { userRegister } from '../services/user.service';
+import { useTitle } from '../hooks/useTitle';
 const useStyles = makeStyles((theme) => ({
     form: {
         marginTop: theme.spacing(6),
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Register = () => {
+    useTitle("Register");
     const classes = useStyles();
     const [error, setError] = useState(false);
     const [stringError, setStringError] = useState("");
