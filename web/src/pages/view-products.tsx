@@ -1,5 +1,5 @@
 import { Chip, Divider, Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
-import React, { useContext, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { TechButton } from '../components/TechButton';
 import { useLoadData } from '../hooks/useLoadData';
@@ -7,8 +7,6 @@ import { Product } from '../models/Product';
 import { urls, useRouting } from '../utils/routing';
 import { ProductDetailsTable } from '../components/ProductDetailsTable';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 // import { Promotion } from '../models/Promotion';
 import { AddToCartButton } from '../components/AddToCartButton';
 import { LoadingComponent } from '../components/LoadingComponent';

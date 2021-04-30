@@ -40,7 +40,7 @@ export const ViewSubCategory = (props: RouteComponentProps<{ id: string }>) => {
     const classes = useStyles();
     const { routeTo } = useRouting();
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-    const [title, setTitle] = useState<string>("");
+    const [title,] = useState<string>("");
     const [categories, setCategories] = useState<Category[]>([]);
     const { loading } = useLoadData(async () => {
         const { id } = props.match.params;
