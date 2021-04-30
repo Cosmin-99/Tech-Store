@@ -8,6 +8,8 @@ import { Register } from './pages/register';
 import { Shop } from './pages/shop';
 import { route, urls } from './utils/routing';
 import { UserContextProvider } from "./contexts/userContext"
+import { ViewSubCategory } from './pages/view-subcategory';
+import { ViewProduct } from './pages/view-products';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -50,6 +52,14 @@ function App() {
                 exact
                 path={route(urls.forgotPassword)}
                 component={ForgotPassword}
+              />
+              <Route
+                path={route(urls.subcategory, ["id"])}
+                component={ViewSubCategory}
+              />
+              <Route
+                path={route(urls.product, ["id"])}
+                component={ViewProduct}
               />
               <Redirect from="/" to={route(urls.shop)} />
             </Switch>

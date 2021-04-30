@@ -22,7 +22,7 @@ export const sendEmail = async (req: Request, res: Response) => {
         const urlToken = jwt.sign({
             email: email,
         }, process.env.TOKEN_ENCRYPTION as string, {
-            expiresIn: "1m"
+            expiresIn: "30m"
         })
 
         //create reusable transporter object using the default SMPT transport
@@ -46,7 +46,7 @@ export const sendEmail = async (req: Request, res: Response) => {
         })
 
         return res.status(200).json({
-            message: "Email Sent!"
+            message: "Email Sent!",
         })
 
     } catch (err) {

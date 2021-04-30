@@ -64,6 +64,12 @@ export const getSubcategoryById = async (req: Request, res: Response, next: Next
             subcategories.imageurl,
         FROM subcategories WHERE categoryid = $1
         `, [id]);
+        const obj = {
+            categoryName:"",
+            subcategories:[{
+                
+            }]
+        }
 
         const category = await pool.query(`
         SELECT * FROM categories WHERE id = $1

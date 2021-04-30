@@ -5,3 +5,6 @@ import { endpointURL, headers } from "./config"
 export const getCategories = () => {
     return axios.get<Category[]>(endpointURL + "/app/categories", { headers });
 }
+export const getSubcategoriesById = (id: string) => {
+    return axios.get<any[]>(endpointURL + `/app/sub-categories/${id}`);
+}
