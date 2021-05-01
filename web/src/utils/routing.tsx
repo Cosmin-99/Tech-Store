@@ -12,8 +12,15 @@ export const urls = {
     register: () => "/register",
     forgotPassword: () => "/reset-password",
     shop: () => "/shop",
+    checkout: () => "/checkout",
+    favorite: () => "/user/favorite",
+    comenzi: () => "/user/comenzi",
+    userDetails: () => "/user/details",
+
+
     subcategory: (p: { id: string }) => `/shop/category/${p.id}`,
-    product: (p: { id: string }) => `/shop/products/${p.id}`
+    product: (p: { id: string }) => `/shop/products/${p.id}`,
+    userProfile: () => `/profile`,
 };
 
 export function routeTo(p: H.History, fn: () => string): void

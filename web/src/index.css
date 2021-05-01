@@ -17,6 +17,10 @@ body {
     font-family: proxima-nova;
 }
 
+.MuiTypography-root {
+    font-family: proxima-nova;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

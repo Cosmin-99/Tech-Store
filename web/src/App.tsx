@@ -7,9 +7,11 @@ import { Login } from './pages/login';
 import { Register } from './pages/register';
 import { Shop } from './pages/shop';
 import { route, urls } from './utils/routing';
-import { UserContextProvider } from "./contexts/userContext"
+import ContextsWrapper from "./contexts/contextsWrapper"
 import { ViewSubCategory } from './pages/view-subcategory';
 import { ViewProduct } from './pages/view-products';
+import { UserProfile } from './pages/user-profile';
+import { UserDetails } from './pages/user-details';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -29,7 +31,7 @@ function App() {
   return (
     <Grid container direction="column" alignItems="center">
       <Grid item container alignItems="stretch" direction="column">
-        <UserContextProvider>
+        <ContextsWrapper>
           <Header />
           <Container className={classes.container}>
             <Switch>
@@ -61,10 +63,18 @@ function App() {
                 path={route(urls.product, ["id"])}
                 component={ViewProduct}
               />
+              <Route
+                path={route(urls.userProfile)}
+                component={UserProfile}
+              />
+              <Route
+                path={route(urls.userDetails)}
+                component={UserDetails}
+              />
               <Redirect from="/" to={route(urls.shop)} />
             </Switch>
           </Container>
-        </UserContextProvider>
+        </ContextsWrapper>
       </Grid>
     </Grid>
   );

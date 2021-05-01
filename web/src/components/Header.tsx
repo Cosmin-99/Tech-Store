@@ -14,6 +14,7 @@ import { IsAuth, IsUnauth } from './IsAuth';
 import { TechMenu } from './TechMenu';
 import { UserContext } from '../contexts/userContext';
 import { clearUserInStorage } from '../utils/utilFunctions';
+import { urls, useRouting } from '../utils/routing';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -108,6 +109,7 @@ export const Header = () => {
     const [, setUser] = useContext(UserContext);
     const [anchorEl, setAnchorEl] = React.useState<AnchorElement>(null);
     const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
+    const { routeTo } = useRouting();
     const handleOpen = () => {
         setOpen(true);
     }
@@ -125,7 +127,7 @@ export const Header = () => {
     }
 
     const handleViewProfile = () => {
-        // routeTo(urls.userProfile);
+        routeTo(urls.userProfile);
         handleCloseMenu();
     }
 
