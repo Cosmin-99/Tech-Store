@@ -55,31 +55,28 @@ export const getCategories = async (req: Request, res: Response): Promise<Respon
 }
 
 export const getSubcategoryById = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
     try {
+        const id = +req.params.id;
+
+        //prefer joins over selects as they're much faster in this case
         const subcategories: QueryResult = await pool.query(`
         SELECT subcategories.id,
             subcategories.name,
             subcategories.categoryid,
-            subcategories.imageurl,
-        FROM subcategories WHERE categoryid = $1
+            subcategories.imageurl
+        FROM subcategories
+            LEFT JOIN categories ON subcategories.categoryid = categories.id
+        WHERE categoryid = $1
         `, [id]);
-        const obj = {
-            categoryName:"",
-            subcategories:[{
-                
-            }]
-        }
 
         const category = await pool.query(`
-        SELECT * FROM categories WHERE id = $1
+        SELECT categories.name FROM categories WHERE id = $1
         `, [id]);
 
         return res.status(200).json({
             categoryName: category.rows[0].name,
             subcategories: subcategories.rows
         });
-
     } catch (e) {
         next(e);
     }
