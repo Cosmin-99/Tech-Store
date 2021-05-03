@@ -65,7 +65,7 @@ export const getSubcategoryById = async (req: Request, res: Response, next: Next
             subcategories.categoryid,
             subcategories.imageurl
         FROM subcategories
-            LEFT JOIN categories ON subcategories.categoryid = categories.id
+            INNER JOIN categories ON subcategories.categoryid = categories.id
         WHERE categoryid = $1
         `, [id]);
 
