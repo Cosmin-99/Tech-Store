@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 import { AppBar, Dialog, DialogContent, Grid, IconButton, MenuItem, Slide, Toolbar, Typography } from '@material-ui/core';
@@ -8,13 +8,14 @@ import { TechButton } from './TechButton';
 import { MobileHeader } from './MobileHeader';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import { SearchBarMenu } from './SearchBarMenu';
 import { useLocation } from 'react-router-dom';
 import { IsAuth, IsUnauth } from './IsAuth';
 import { TechMenu } from './TechMenu';
 import { UserContext } from '../contexts/userContext';
 import { clearUserInStorage } from '../utils/utilFunctions';
-import { urls, useRouting } from '../utils/routing';
+import { adminUrls, urls, useRouting } from '../utils/routing';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -106,7 +107,8 @@ type AnchorElement = null | HTMLElement;
 export const Header = () => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [, setUser] = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
+    const canAccesDashboard = useMemo(() => user.role === "admin", [user]);
     const [anchorEl, setAnchorEl] = React.useState<AnchorElement>(null);
     const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
     const { routeTo } = useRouting();
@@ -136,7 +138,9 @@ export const Header = () => {
         setUser(null!);
         handleCloseMenu();
     }
-
+    const handleDashboardClick = () => {
+        routeTo(adminUrls.categories);
+    }
     const location = useLocation<Location>();
     React.useEffect(() => {
         // close modal on location change to avoid visuals
@@ -181,6 +185,16 @@ export const Header = () => {
                             }}>
                                 {`Produse Favorite (${5})`}
                             </Typography>
+                            {canAccesDashboard && <TechButton
+                                aria-controls="menu"
+                                aria-haspopup="true"
+                                onClick={handleDashboardClick}
+                                color="inherit"
+                                disableRipple
+                                startIcon={<DashboardIcon />}
+                            >
+                                Dashboard
+                            </TechButton>}
                             <TechButton
                                 aria-controls="menu"
                                 aria-haspopup="true"

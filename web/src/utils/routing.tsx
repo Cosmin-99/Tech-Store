@@ -7,6 +7,14 @@ import { useHistory } from "react-router-dom";
 //     ) : never
 // }[keyof T]
 
+const adminPrefix = "admin";
+export const adminUrls = {
+    categories: () => `/${adminPrefix}/categories`,
+    subCategories: () => `/${adminPrefix}/sub-categories`,
+    products: () => `/${adminPrefix}/products`,
+    users: () => `/${adminPrefix}/users`
+}
+
 export const urls = {
     login: () => "/login",
     register: () => "/register",
