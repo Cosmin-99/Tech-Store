@@ -5,16 +5,30 @@ import { pool } from "../database/database";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../error/ApiError";
 import { HttpStatusCode } from "../error/HttpStatusCodes";
+import * as yup from 'yup';
 
-export const userRegister = async (req: Request, res: Response): Promise<Response> => {
+
+export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const schema = yup.object().shape({
+            firstName: yup.string().required("First Name is Required"),
+            lastName: yup.string().required("Last Name is Required"),
+            email: yup.string().email("Invalid Email").required("Email is Required"),
+            password: yup.string().min(3).required("Password is Required"),
+        });
         const { firstName, lastName, email, password } = req.body;
+
+        await schema.validate({
+            firstName, lastName, email, password
+        })
+        // if this passes it means that the schema is valid , otherwise the error will be catched down
+
         const user: QueryResult = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
 
         if (!user.rows.length) {
             const hashedPassword = await bcrypt.hash(password, 12);
             const role = "user";
-            const response: QueryResult = await pool.query(`
+            await pool.query(`
         INSERT INTO Users ("firstname", "lastname", "email", "role", "password") VALUES ($1, $2, $3, $4, $5)
         `,
                 [
@@ -42,15 +56,18 @@ export const userRegister = async (req: Request, res: Response): Promise<Respons
                 token
             })
         } else if (user.rows[0].email === email) {
-            return res.status(400).json({
-                message: "This email already exists in database !!!"
-            })
+            next(new ApiError(HttpStatusCode.BadRequest, "Email already exists"));
         } else {
-            return res.status(400).json({ message: "Something went wrong when you try to register. Please try again !!!" })
+            next(new ApiError(HttpStatusCode.InternalServerError, "Something went wrong when you try to register. Please try again"));
         }
 
     } catch (err) {
-        return res.status(400).json({ message: "Something went wrong when you try to register. Please try again !!!" })
+        console.log(err);
+        if (err instanceof yup.ValidationError) {
+            next(err.errors[0]);
+        } else {
+            next(err);
+        }
     }
 }
 

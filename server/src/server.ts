@@ -29,11 +29,6 @@ app.use(passport.session());
 
 passportConfig();
 
-app.use(function (req, res, next) {
-    console.log("Middleware");
-    next();
-});
-
 app.use('/api/auth/', authRouter);
 app.use('/api/app/', appRoutes);
 app.use('/api/app/user', userRoutes);

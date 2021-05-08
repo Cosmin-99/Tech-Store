@@ -6,7 +6,15 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 
-const theme = createMuiTheme();
+const theme = createMuiTheme({
+  overrides: {
+    MuiTab: {
+      wrapper: {
+        flexDirection: "row"
+      }
+    }
+  },
+});
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <BrowserRouter>
