@@ -5,7 +5,7 @@ import { urls } from "../utils/routing";
 export const AdminRoute: FC<RouteProps> = (props) => {
     const { children, ...routeProps } = props;
     const [user,] = useContext(UserContext);
-    const isAdmin = useMemo(() => user.role === "admin", [user]);
+    const isAdmin = useMemo(() => user?.role === "admin", [user]);
     return <Route
         {...routeProps}
         render={({ location }) => (

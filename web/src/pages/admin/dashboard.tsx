@@ -2,8 +2,12 @@ import { Grid, Container } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 import { useTitle } from "../../hooks/useTitle";
 import { adminUrls, route } from "../../utils/routing";
+import { CategoriesList } from "./categories-list";
 import { Header } from "./Header";
 import { MenuBar } from "./MenuBar"
+import { ProductForm } from "./product-form";
+import { ProductsList } from "./products-list";
+import { SubcategoriesList } from "./subcategories-list";
 
 
 const Dashboard = () => {
@@ -16,25 +20,31 @@ const Dashboard = () => {
 
                 <Switch>
                     <Route
+                        exact
                         path={route(adminUrls.categories)}
-                    >
-                        Categories Page
-                    </Route>
+                        component={CategoriesList}
+                    />
                     <Route
+                        exact
                         path={route(adminUrls.products)}
-                    >
-                        Products
-                    </Route>
+                        component={ProductsList}
+                    />
                     <Route
                         path={route(adminUrls.users)}
                     >
                         Users
                     </Route>
                     <Route
+                        exact
                         path={route(adminUrls.subCategories)}
-                    >
-                        Sub Categories
-                    </Route>
+                        component={SubcategoriesList}
+                    />
+
+                    <Route
+                        exact
+                        path={route(adminUrls.productAdd)}
+                        component={ProductForm}
+                    />
                 </Switch>
             </Container>
         </Grid>

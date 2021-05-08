@@ -21,6 +21,30 @@ body {
     font-family: proxima-nova;
 }
 
+.table-list-pagination-bottom>div div:not(.detail-panel-history-table)>.MuiTable-root {
+    table-layout: fixed !important;
+}
+
+
+/* Footer position to bottom in the Table List Pages */
+
+.table-list-pagination-bottom .MuiTablePagination-toolbar {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    background-color: #e4e4e4;
+    border-top: 1px solid #cccccc;
+    padding: 0 2rem;
+}
+
+@media screen and (max-width: 600px) {
+    .table-list-pagination-bottom .MuiTablePagination-toolbar {
+        position: fixed;
+        bottom: 72px;
+        padding: 0;
+    }
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

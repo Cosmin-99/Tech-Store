@@ -1,6 +1,5 @@
-import React from "react";
-import { Button, Grid, makeStyles, Menu, MenuItem } from "@material-ui/core";
-import { AccountCircle, ExpandMore, ExpandLess, PowerSettingsNew, ArrowBack } from "@material-ui/icons";
+import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import { ArrowBack } from "@material-ui/icons";
 import { urls, useRouting } from "../../utils/routing";
 
 const useStyles = makeStyles(theme => ({
@@ -53,23 +52,10 @@ const useStyles = makeStyles(theme => ({
 export const Header = () => {
     const classes = useStyles();
 
-    const [open, setOpen] = React.useState(true);
     const { routeTo } = useRouting();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const closeMenu = () => {
-        setOpen(!open);
-        setAnchorEl(null);
-    };
     const goBackToMainSite = () => {
         routeTo(urls.shop);
     }
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setOpen(!open);
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        closeMenu();
-    };
     return <Grid container className={classes.header}>
         <Grid item xs={8} sm={5} md={4} lg={3} className={classes.siteTitle}>
             <Grid container alignItems="center">
@@ -82,38 +68,13 @@ export const Header = () => {
                     >
                         Go Back
                     </Button>
-                    {/* <Typography
-                        variant="h1"
-                        component="h2"
-                        style={{ fontSize: "1rem", color: "black" }}
-                        className={classes.siteLogo}
-                    >
-                        Art Gallery
-                        </Typography> */}
-                </Grid>
-                <Grid item>
-                    <Button
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                        className={classes.userButtonHeader}
-                        style={{ display: "flex", alignItems: "center" }}
-                    >
-                        <AccountCircle />
-                        {open ? <ExpandMore /> : <ExpandLess />}
-                    </Button>
-                    <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={closeMenu}
-                    >
-                        <div style={{ padding: "6px 16px" }}>Logged in as: <strong>Ionel</strong></div>
-                        <MenuItem onClick={handleClose}><PowerSettingsNew style={{ marginRight: "0.5rem" }} />Logout</MenuItem>
-                    </Menu>
                 </Grid>
             </Grid>
+        </Grid>
+        <Grid item>
+            <Typography variant="h4">
+                Dashboard
+            </Typography>
         </Grid>
 
     </Grid>

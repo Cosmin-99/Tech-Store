@@ -9,7 +9,6 @@ import { LoadingComponent } from '../components/LoadingComponent';
 import { useTitle } from '../hooks/useTitle';
 import { urls, useRouting } from '../utils/routing';
 
-
 const useStyles = makeStyles((theme) => ({
     categoryText: {
         userSelect: "none",

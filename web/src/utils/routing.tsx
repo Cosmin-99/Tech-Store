@@ -12,6 +12,7 @@ export const adminUrls = {
     categories: () => `/${adminPrefix}/categories`,
     subCategories: () => `/${adminPrefix}/sub-categories`,
     products: () => `/${adminPrefix}/products`,
+    productAdd: () => `/${adminPrefix}/products/add`,
     users: () => `/${adminPrefix}/users`
 }
 
