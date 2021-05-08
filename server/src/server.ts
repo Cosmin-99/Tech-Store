@@ -11,6 +11,7 @@ import passport from 'passport';
 import { passportConfig } from './strategies/passport';
 
 import { apiErrorHandler } from './error/apiErrorHandler';
+import { userRoutes } from './routes/userRoutes';
 dotenv.config();
 
 const app = express();
@@ -35,6 +36,7 @@ app.use(function (req, res, next) {
 
 app.use('/api/auth/', authRouter);
 app.use('/api/app/', appRoutes);
+app.use('/api/app/user', userRoutes);
 
 //this should be among the last of the routes cuz of the next() function
 app.use(apiErrorHandler)
