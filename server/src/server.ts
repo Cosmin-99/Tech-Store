@@ -9,6 +9,7 @@ import { appRoutes } from './routes/appRoutes';
 import cors from 'cors';
 import passport from 'passport';
 import { passportConfig } from './strategies/passport';
+import multer from "multer";
 
 import { apiErrorHandler } from './error/apiErrorHandler';
 import { userRoutes } from './routes/userRoutes';
@@ -16,11 +17,13 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
+const upload = multer();
 app.use(cors())
 app.use(morgan('tiny'));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+// app.use(upload.array("name"))
 
 // app.use(session({ pauseStream: true}));
 app.use(passport.initialize());

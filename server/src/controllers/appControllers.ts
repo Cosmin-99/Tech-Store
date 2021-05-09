@@ -55,48 +55,6 @@ export const getCategories = async (req: Request, res: Response): Promise<Respon
         return res.status(404).json(err)
     }
 }
-export const getSubcategories = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const subcategories = await pool.query(`
-        SELECT
-            sb.*,
-            cat.name AS categoryName
-        FROM subcategories AS sb
-        LEFT JOIN categories AS cat ON sb.categoryid = cat.id
-       `);
-        return res.status(200).json(subcategories.rows)
-    } catch (e) {
-        next(e);
-    }
-}
-
-export const getSubcategoryByCategoryId = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = +req.params.id;
-
-        //prefer joins over selects as they're much faster in this case
-        const subcategories: QueryResult = await pool.query(`
-        SELECT subcategories.id,
-            subcategories.name,
-            subcategories.categoryid,
-            subcategories.imageurl
-        FROM subcategories
-            INNER JOIN categories ON subcategories.categoryid = categories.id
-        WHERE categoryid = $1
-        `, [id]);
-
-        const category = await pool.query(`
-        SELECT categories.name FROM categories WHERE id = $1
-        `, [id]);
-
-        return res.status(200).json({
-            categoryName: category.rows[0].name,
-            subcategories: subcategories.rows
-        });
-    } catch (e) {
-        next(e);
-    }
-}
 
 export const updateCatergory = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -123,13 +81,7 @@ export const updateCatergory = async (req: Request, res: Response, next: NextFun
                 if (err) {
                     return res.status(404).json(err);
                 } else {
-                    return res.status(200).json({
-                        filename: blobName,
-                        originalname: request.file.originalname,
-                        size: streamLength,
-                        path: `${azureStorageConfig.containerName}/${blobName}`,
-                        url: `${azureStorageConfig.blobURL}/${blobName}`
-                    });
+                    return ;
                 }
             });
 
