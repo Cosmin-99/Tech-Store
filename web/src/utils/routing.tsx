@@ -30,6 +30,7 @@ export const urls = {
     subcategory: (p: { id: string }) => `/shop/category/${p.id}`,
     product: (p: { id: string }) => `/shop/products/${p.id}`,
     userProfile: () => `/profile`,
+    notFound: ()=>`/404ErrorPage`
 };
 
 export function routeTo(p: H.History, fn: () => string): void

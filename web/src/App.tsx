@@ -12,6 +12,8 @@ import { ViewSubCategory } from './pages/view-subcategory';
 import { ViewProduct } from './pages/view-products';
 import { UserProfile } from './pages/user-profile';
 import { UserDetails } from './pages/user-details';
+import NotFound from './pages/404ErrorPage';
+
 import { PrivateRoute } from './components/PrivateRoute';
 import { AdminRoute } from './components/AdminRoute';
 import AdminDashboard from "./pages/admin/dashboard"
@@ -81,7 +83,17 @@ function App() {
                     path={route(urls.userDetails)}
                     component={UserDetails}
                   />
-                  <Redirect from="/" to={route(urls.shop)} />
+                  <Route
+                    path={route(urls.notFound)}
+                    component={NotFound}
+                  />
+                  <Route
+                    exact
+                    path="/"
+                  >
+                    <Redirect from="/" to={route(urls.shop)} />
+                  </Route>
+                  <Redirect from="*" to={route(urls.notFound)} />
                 </Switch>
               </Container>
             </Route>
