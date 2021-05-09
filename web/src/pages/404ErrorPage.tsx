@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import styled,{keyframes} from 'styled-components';
-const img =process.env.PUBLIC_URL+"/Splat.png";
-const href="/src/App.tsx";
+import styled, { keyframes } from 'styled-components';
+const img = process.env.PUBLIC_URL + "/Splat.png";
+const href = "/src/App.tsx";
 const rainbow = keyframes`
     0%{color:red;}
     17%{color:orange;}
@@ -27,7 +27,7 @@ const Message = styled.p`
         font-size:15px;
     }
     `;
-const Splat = styled.img.attrs({src:`${img}`})`
+const Splat = styled.img`
     width: 676.8px;
     height: 558.4px;
     z-index: -1;
@@ -55,7 +55,7 @@ const Center = styled.div`
     }
     width:100%;
     `;
-const StyledLink = styled.a.attrs({href:`${href}`})`
+const StyledLink = styled(Link)`
     text-decoration: none;
     margin:0px;
     &:link{
@@ -76,13 +76,13 @@ const StyledLink = styled.a.attrs({href:`${href}`})`
 const PageNotFound = () => {
     return (
         <div>
-            <Splat></Splat>
+            <Splat src={img}></Splat>
             <Center>
                 <Error>Error 404</Error>
-                <Message>Page not found. <StyledLink> Go to the main page</StyledLink></Message>
+                <Message>Page not found. <StyledLink to="/shop"> Go to the main page</StyledLink></Message>
             </Center>
         </div>
-        )
-    }
+    )
+}
 
 export default PageNotFound;
