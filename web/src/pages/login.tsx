@@ -9,6 +9,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import { User } from '../models/User';
 import { getKeys, storeUserInStorage } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
+import { AxiosError } from 'axios';
 import GoogleLogin, { GoogleLoginResponse, } from 'react-google-login';
 import { loginWithGoogle, userLogin } from '../services/user.service';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -44,6 +45,9 @@ const responseGoogle = async (response: GoogleLoginResponse) => {
         console.log(response);
     }
 }
+function isAxiosError<T>(opt: any): opt is AxiosError<T> {
+    return "isAxiosError" in opt;
+}
 export const Login = () => {
     useTitle("Login");
     type LoginUser = Pick<User, "email" | "password">;
@@ -68,8 +72,15 @@ export const Login = () => {
             routeTo(urls.shop);
         }
         catch (error) {
-            setError(true);
-            setStringError(error.message);
+            if (isAxiosError<any>(error)) {
+                const message = error.response!.data.message
+                setError(true);
+                setStringError(message);
+            } else {
+                setError(true);
+                setStringError(error.message);
+
+            }
         }
     }
 

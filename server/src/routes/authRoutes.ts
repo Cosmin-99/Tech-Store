@@ -13,7 +13,7 @@ authRouter.post("/login", passport.authenticate('local'), (req, res) => {
     res.json(req.user);
 });
 authRouter.post("/google-login", googleLogin);
-authRouter.post("/facebook-login", facebookLogin);
+authRouter.post("/facebook-login", passport.authenticate('facebook'));
 authRouter.post("/reset-password", sendEmail);
 authRouter.post("/reset-password/:urlKey", resetPassword);
 authRouter.post("/verify-token", tokenVerification);

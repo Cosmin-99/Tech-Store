@@ -23,6 +23,7 @@
         "@types/node-fetch": "^2.5.10",
         "@types/nodemailer": "^6.4.1",
         "@types/passport": "^1.0.6",
+        "@types/passport-facebook": "^2.1.10",
         "@types/passport-local": "^1.0.33",
         "@types/pg": "^7.14.11",
         "azure-storage": "^2.10.3",
@@ -41,8 +42,10 @@
         "node-fetch": "^2.6.1",
         "nodemailer": "^6.5.0",
         "passport": "^0.4.1",
+        "passport-facebook": "^3.0.0",
         "passport-local": "^1.0.0",
-        "pg": "^8.5.1"
+        "pg": "^8.5.1",
+        "yup": "^0.32.9"
     },
     "devDependencies": {
         "@types/express": "^4.17.11",

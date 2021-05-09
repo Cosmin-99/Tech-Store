@@ -5,7 +5,7 @@ import { headers } from "../services/config";
 import { verifyToken } from "../services/user.service";
 
 
-type UserValue = Omit<User, "password">;
+type UserValue = Omit<User, "password"> | null;
 
 export const UserContext = createContext<[UserValue, Dispatch<UserValue>]>([null!, () => null!]);
 

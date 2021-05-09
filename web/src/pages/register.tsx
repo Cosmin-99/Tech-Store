@@ -36,6 +36,7 @@ export const Register = () => {
         lastName: 1,
         password: 1,
         token: 1,
+        role: 1,
     })
     const handleSubmit = async (o: User) => {
         try {

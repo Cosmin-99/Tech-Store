@@ -14,6 +14,9 @@ import { UserProfile } from './pages/user-profile';
 import { UserDetails } from './pages/user-details';
 import NotFound from './pages/404ErrorPage';
 
+import { PrivateRoute } from './components/PrivateRoute';
+import { AdminRoute } from './components/AdminRoute';
+import AdminDashboard from "./pages/admin/dashboard"
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -34,52 +37,67 @@ function App() {
     <Grid container direction="column" alignItems="center">
       <Grid item container alignItems="stretch" direction="column">
         <ContextsWrapper>
-          <Header />
-          <Container className={classes.container}>
-            <Switch>
-              <Route
-                exact
-                path={route(urls.login)}
-                component={Login}
-              />
-              <Route
-                exact
-                path={route(urls.register)}
-                component={Register}
-              />
-              <Route
-                exact
-                path={route(urls.shop)}
-                component={Shop}
-              />
-              <Route
-                exact
-                path={route(urls.forgotPassword)}
-                component={ForgotPassword}
-              />
-              <Route
-                path={route(urls.subcategory, ["id"])}
-                component={ViewSubCategory}
-              />
-              <Route
-                path={route(urls.product, ["id"])}
-                component={ViewProduct}
-              />
-              <Route
-                path={route(urls.userProfile)}
-                component={UserProfile}
-              />
-              <Route
-                path={route(urls.userDetails)}
-                component={UserDetails}
-              />
-              <Route
-                // path={route(urls.notFound)}
-                component={NotFound}
-              />
-              {/* <Redirect from="/" to={route(urls.shop)} /> */}
-            </Switch>
-          </Container>
+          <Switch>
+            <AdminRoute
+              path="/admin"
+              component={AdminDashboard}
+            />
+            {/* FallBack route for not-admin user */}
+            <Route>
+              <Header />
+              <Container className={classes.container}>
+                <Switch>
+                  <Route
+                    exact
+                    path={route(urls.login)}
+                    component={Login}
+                  />
+                  <Route
+                    exact
+                    path={route(urls.register)}
+                    component={Register}
+                  />
+                  <Route
+                    exact
+                    path={route(urls.shop)}
+                    component={Shop}
+                  />
+                  <Route
+                    exact
+                    path={route(urls.forgotPassword)}
+                    component={ForgotPassword}
+                  />
+                  <Route
+                    path={route(urls.subcategory, ["id"])}
+                    component={ViewSubCategory}
+                  />
+                  <Route
+                    path={route(urls.product, ["id"])}
+                    component={ViewProduct}
+                  />
+                  <PrivateRoute
+                    path={route(urls.userProfile)}
+                    component={UserProfile}
+                  />
+                  <PrivateRoute
+                    path={route(urls.userDetails)}
+                    component={UserDetails}
+                  />
+                  <Route
+                    path={route(urls.notFound)}
+                    component={NotFound}
+                  />
+                  <Route
+                    exact
+                    path="/"
+                  >
+                    <Redirect from="/" to={route(urls.shop)} />
+                  </Route>
+                  <Redirect from="*" to={route(urls.notFound)} />
+                </Switch>
+              </Container>
+            </Route>
+          </Switch>
         </ContextsWrapper>
       </Grid>
     </Grid>

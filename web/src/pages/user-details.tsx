@@ -227,7 +227,7 @@ export const UserDetails = () => {
         <Grid container spacing={sm ? 4 : 0}>
             <Grid item xs={12}>
                 <Formik
-                    initialValues={user}
+                    initialValues={user!}
                     onSubmit={saveUserDetails}
                 >
                     {({ values, handleChange }) => {

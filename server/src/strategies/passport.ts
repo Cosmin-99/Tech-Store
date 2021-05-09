@@ -1,4 +1,5 @@
 import passport from "passport";
+import { facebookStrategy } from "./facebookStartegy";
 import { localStrategy } from "./localStrategy";
 export function passportConfig() {
     passport.serializeUser((user, done) => {
@@ -10,4 +11,5 @@ export function passportConfig() {
     })
 
     localStrategy();
+    facebookStrategy();
 }

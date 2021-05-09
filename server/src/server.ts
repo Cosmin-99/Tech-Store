@@ -11,11 +11,11 @@ import passport from 'passport';
 import { passportConfig } from './strategies/passport';
 
 import { apiErrorHandler } from './error/apiErrorHandler';
+import { userRoutes } from './routes/userRoutes';
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
-
 app.use(cors())
 app.use(morgan('tiny'));
 app.use(json());
@@ -30,6 +30,7 @@ passportConfig();
 
 app.use('/api/auth/', authRouter);
 app.use('/api/app/', appRoutes);
+app.use('/api/app/user', userRoutes);
 
 //this should be among the last of the routes cuz of the next() function
 app.use(apiErrorHandler)
