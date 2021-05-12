@@ -1,5 +1,5 @@
-import { Card as MuiCard, CardContent, Grid, TextField, Typography } from "@material-ui/core";
-import { Formik, Form } from "formik"
+import { Button, Card as MuiCard, CardContent, Grid, IconButton, TextField, Typography } from "@material-ui/core";
+import { Formik, Form, FieldArray } from "formik"
 import { DropzoneArea, } from "material-ui-dropzone";
 import { spacing } from "@material-ui/system";
 import styled from "styled-components";
@@ -14,6 +14,8 @@ import { LoadingComponent } from "components/LoadingComponent";
 import { addProduct } from "services/products.service";
 import { isAxiosError } from "utils/utilFunctions";
 import { adminUrls, useRouting } from "utils/routing";
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
     price: Yup.number().required("Required").min(0).typeError("Number is required in this field!"),
@@ -31,6 +33,7 @@ const initialValues = {
     discount: 0,
     subcategoryid: 0,
     subcategory: null as (Category | null),
+    description: [] as Array<[string, string]>
 }
 export const ProductForm = () => {
     const [subcategories, setSubcategories] = useState<Category[]>([]);
@@ -48,11 +51,14 @@ export const ProductForm = () => {
         initialValues={initialValues}
         validateOnMount={true}
         validationSchema={validationSchema}
-        onSubmit={async (values, formikHelpers) => {
+        onSubmit={async (values) => {
             try {
-
-                console.log(values);
-                await addProduct(values);
+                const stringifedDetails = JSON
+                    .stringify(values
+                        .description
+                        .reduce((acc, current) => ({ ...acc, [current[0]]: current[1] }), {}));
+                console.log(stringifedDetails);
+                await addProduct({ ...values, description: stringifedDetails });
                 routeTo(adminUrls.products);
             } catch (e) {
                 if (isAxiosError<any>(e)) {
@@ -144,6 +150,39 @@ export const ProductForm = () => {
                                             subcategoryid: value ? value.id : 0,
                                         });
                                     }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FieldArray
+                                    name="description"
+                                    render={arrayHelpers => (
+                                        <Grid container spacing={3}>
+                                            {values.description.length === 0 && <Grid item xs={12}>
+                                                <Button color="primary" variant="contained" onClick={() => arrayHelpers.push(["", ""])}>
+                                                    Add Details
+                                                </Button>
+                                            </Grid>}
+                                            {values.description.length > 0 && values.description.map((detail, index) => (
+                                                <Grid container item xs={12} spacing={3} key={index}>
+                                                    <Grid item xs={5}>
+                                                        <TextField label="Key" value={values.description[index][0]} onChange={handleChange} id={`description.${index}.0`} variant="outlined" fullWidth />
+                                                    </Grid>
+                                                    <Grid item xs={5}>
+                                                        <TextField label="Value" value={values.description[index][1]} onChange={handleChange} id={`description.${index}.1`} variant="outlined" fullWidth />
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <IconButton onClick={() => arrayHelpers.push(["", ""])}>
+                                                            <AddIcon />
+                                                        </IconButton>
+                                                        <IconButton onClick={() => arrayHelpers.remove(index)}>
+                                                            <RemoveIcon />
+                                                        </IconButton>
+                                                    </Grid>
+                                                </Grid>
+                                            ))}
+                                        </Grid>
+                                    )}
                                 />
                             </Grid>
                             <Grid item xs={12}>

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, Grid, makeStyles, TextField, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import { TechButton } from '../components/TechButton';
@@ -10,7 +10,6 @@ import { LoadingComponent } from '../components/LoadingComponent';
 import { CreditCard } from '../models/CreditCard';
 import { UserContext } from '../contexts/userContext';
 import { updateUser } from "services/user.service"
-import { User } from 'models/User';
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('sm')]: {
@@ -68,7 +67,7 @@ export const UserDetails = () => {
             return;
         }
         await updateUser(submitObject as any);
-    }, []);
+    }, [user]);
     const [componentRender, setComponent] = React.useState("");
     const saveUserDetails = async (obj: {
         firstName: string;
@@ -231,7 +230,7 @@ export const UserDetails = () => {
                 cards: JSON.stringify(cards)
             }
             await updateUserFn(submitObject);
-            
+
             setCurrentAddresses(newAddresses);
             // await setAddresses(newAddresses);
         }

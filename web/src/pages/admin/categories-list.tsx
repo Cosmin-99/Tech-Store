@@ -5,8 +5,10 @@ import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
 import { getCategories } from "services/categories.service";
 import { Avatar } from "@material-ui/core";
+import { adminUrls, useRouting } from "utils/routing";
 export const CategoriesList = () => {
     const [categories, setCategories] = useState<Category[]>([]);
+    const { routeTo } = useRouting();
     const { loading } = useLoadData(async () => {
         const req = await getCategories();
         const categories = req.data;
@@ -39,6 +41,14 @@ export const CategoriesList = () => {
             options={{
                 search: true
             }}
+            actions={[{
+                isFreeAction: true,
+                icon: "add",
+                tooltip: "Add Subcategory",
+                onClick: () => {
+                    routeTo(adminUrls.categoriesAdd);
+                }
+            }]}
         />
     </div>
 

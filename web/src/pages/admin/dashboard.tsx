@@ -2,6 +2,7 @@ import { Grid, Container } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 import { useTitle } from "../../hooks/useTitle";
 import { adminUrls, route } from "../../utils/routing";
+import { CategoriesForm } from "./categories-form";
 import { CategoriesList } from "./categories-list";
 import { Header } from "./Header";
 import { MenuBar } from "./MenuBar"
@@ -55,6 +56,11 @@ const Dashboard = () => {
                         exact
                         path={route(adminUrls.subCategoryEdit, ["id"])}
                         component={SubcategoriesForm}
+                    />
+                    <Route
+                        exact
+                        path={route(adminUrls.categoriesAdd)}
+                        component={CategoriesForm}
                     />
                 </Switch>
             </Container>

@@ -77,10 +77,12 @@ function App() {
                     component={ViewProduct}
                   />
                   <PrivateRoute
+                    exact
                     path={route(urls.userProfile)}
                     component={UserProfile}
                   />
                   <PrivateRoute
+                    exact
                     path={route(urls.userDetails)}
                     component={UserDetails}
                   />

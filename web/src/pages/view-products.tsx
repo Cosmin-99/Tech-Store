@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Breadcrumbs, Grid, Link, makeStyles, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import { useLoadData } from '../hooks/useLoadData';
-import { Category } from '../models/Category';
 import { RouteComponentProps } from 'react-router-dom';
 import { Product } from '../models/Product';
-import { route, urls, useRouting } from '../utils/routing';
+import { urls, useRouting } from '../utils/routing';
 import { ProductDisplay } from '../components/ProductCard';
 import { LoadingComponent } from '../components/LoadingComponent';
 import { getProductBySubcategoryId } from 'services/products.service';

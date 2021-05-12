@@ -10,6 +10,9 @@ import { useHistory } from "react-router-dom";
 const adminPrefix = "admin";
 export const adminUrls = {
     categories: () => `/${adminPrefix}/categories`,
+    categoriesAdd: () => `/${adminPrefix}/categories/add`,
+    categoriesEdit: (p: { id: string }) => `/${adminPrefix}/categories/edit/${p.id}`,
+
     subCategories: () => `/${adminPrefix}/sub-categories`,
     subCategoryAdd: () => `/${adminPrefix}/sub-categories/add`,
     subCategoryEdit: (p: { id: number }) => `/${adminPrefix}/sub-categories/edit/${p.id}`,

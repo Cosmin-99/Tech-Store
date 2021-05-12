@@ -25,3 +25,15 @@ export const addSubcategory = (subcategory: {
     generateFormData(fd, subcategory);
     return axios.post(endpointURL + `/app/add-subcategory/${subcategory.categoryid}`, fd, { headers })
 }
+export const deleteSubcategory = async (id: string | number) => {
+    await axios.delete(endpointURL + `/app/subcategory/${id}`, { headers });
+}
+
+export const addCategory = async (obj: {
+    name: string;
+    file: File | null;
+}) => {
+    const fd = new FormData();
+    generateFormData(fd, obj);
+    return axios.post(endpointURL + "/app/add-category", fd, { headers });
+}

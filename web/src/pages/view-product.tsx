@@ -10,6 +10,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 // import { Promotion } from '../models/Promotion';
 import { AddToCartButton } from '../components/AddToCartButton';
 import { LoadingComponent } from '../components/LoadingComponent';
+import { getProductById } from 'services/products.service';
 const useStyles = makeStyles((theme) => ({
     grid: {
         backgroundColor: theme.palette.background.paper,
@@ -49,40 +50,28 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const ViewProduct = (p: RouteComponentProps<{ product: string }>) => {
+export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
     const { routeTo } = useRouting();
     const classes = useStyles();
 
     const [product, setProduct] = useState<Product>();
-    const [details, setDetails] = useState<object>(null!);
+    const [details, setDetails] = useState<Record<string, string>>(null!);
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
     const { loading } = useLoadData(async () => {
-        // const product = await getProductById(p.match.params.product);
-
-        const product = {
-            name: "Produs",
-            pret: 500,
-            discount: 100,
-            imageurl: "https://s13emagst.akamaized.net/products/10663/10662750/images/res_ecfc088b490d89ed2e289fc4dd889641.jpg?width=450&height=450&hash=95A4B7319532656D6EC386362AF0004A",
-            details: {
-                "Slot": "PCI Express 2.0",
-                "Procesor Video": "GeForce GT 710",
-                "Rezolutie maxima": "4096 x 2160",
-                "Tip placa": "Multimedia"
-            }
-        } as any;
+        const req = await getProductById(p.match.params.id)
+        const product = req.data;
         if (!product) {
             routeTo(urls.shop);
             return;
         }
-        const details = product.details;
-        if (details) {
-            setDetails(details)
+        const description = product.description;
+        if (description) {
+            setDetails(JSON.parse(description));
         } else {
             setDetails(null!);
         }
         setProduct(product);
-    }, [p.match.params.product]);
+    }, [p.match.params.id]);
     if (loading || !product) {
         return <LoadingComponent />
     }
@@ -95,7 +84,14 @@ export const ViewProduct = (p: RouteComponentProps<{ product: string }>) => {
         {sm && <Grid container className={classes.grid}>
             <Grid item xs={8}>
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRight: "1px solid rgba(0, 0, 0, 0.12)" }}>
-                    <img src={imageurl ?? ""} alt={name} style={{ objectFit: "contain" }} />
+
+                    <img src={imageurl ?? ""} alt={name} style={{
+                        objectFit: "contain",
+                        maxWidth: "500px",
+                        maxHeight: "500px"
+                        // width: "50%",
+                        // height: "50%"
+                    }} />
                 </div>
             </Grid>
             <Grid item xs={4} sm container>

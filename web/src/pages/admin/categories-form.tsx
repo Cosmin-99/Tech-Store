@@ -4,43 +4,27 @@ import { DropzoneArea, } from "material-ui-dropzone";
 import { spacing } from "@material-ui/system";
 import styled from "styled-components";
 import * as Yup from "yup";
-import { SingleSelectAutocomplete } from "components/SingleSelectAutocomplete";
 import { TechButton } from "components/TechButton";
 import { useState } from "react";
-import { useLoadData } from "hooks/useLoadData";
-import { addSubcategory, getCategories } from "services/categories.service";
-import { Category } from "models/Category";
-import { LoadingComponent } from "components/LoadingComponent";
+import { addCategory } from "services/categories.service";
 import { isAxiosError } from "utils/utilFunctions";
 import { adminUrls, useRouting } from "utils/routing";
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
-    categoryid: Yup.number().required("Required"),
-    category: Yup.object().required("Required").typeError("Required")
 });
 
 const Card = styled(MuiCard)(spacing);
 
 const initialValues = {
     name: "",
-    category: null as Category | null,
-    categoryid: 0,
     file: null as File | null
 }
-export const SubcategoriesForm = () => {
-    const [subcategories, setSubcategories] = useState<Category[]>([]);
+export const CategoriesForm = () => {
     const [error, setError] = useState("");
     const {
         routeTo
     } = useRouting();
-    const { loading } = useLoadData(async () => {
-        const req = await getCategories();
-        setSubcategories(req.data);
-    }, []);
 
-    if (loading) {
-        return <LoadingComponent />;
-    }
     return <Formik
         initialValues={initialValues}
         validateOnMount={true}
@@ -48,8 +32,8 @@ export const SubcategoriesForm = () => {
         onSubmit={async (values) => {
             try {
                 console.log(values);
-                await addSubcategory(values);
-                routeTo(adminUrls.subCategories);
+                await addCategory(values);
+                routeTo(adminUrls.categories);
             } catch (e) {
                 if (isAxiosError<any>(e)) {
                     const message = e.response!.data.message
@@ -89,27 +73,6 @@ export const SubcategoriesForm = () => {
                                     helperText={touched.name && errors.name}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <SingleSelectAutocomplete
-                                    renderOption={opt => opt?.name ?? ""}
-                                    value={values.category}
-                                    InputProps={{
-                                        label: "Category",
-                                        variant: "outlined",
-                                        error: Boolean(errors.category),
-                                        helperText: errors.category,
-                                    }}
-                                    required
-                                    options={subcategories}
-                                    onChange={value => {
-                                        setValues({
-                                            ...values,
-                                            category: value,
-                                            categoryid: value ? value.id : 0,
-                                        });
-                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12}>

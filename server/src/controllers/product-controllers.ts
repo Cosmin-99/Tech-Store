@@ -27,9 +27,10 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
         const {
             name,
             price,
-            discount
+            discount,
+            description
         } = req.body;
-
+        console.log(description);
         const id: number = parseInt(req.params.id);
 
         const azureStorageConfig = {
@@ -40,7 +41,6 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
         }
 
         const request = (req as MulterRequest);
-        console.log(request.file);
         const blobName = request.file.originalname;
         const stream = getStream(request.file.buffer);
         const streamLength = request.file.buffer.length;
@@ -65,7 +65,7 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
         });
 
         const imageURL = `${azureStorageConfig.blobURL}/${blobName}`
-        const response: QueryResult = await pool.query('INSERT INTO Products ("name", "price", "discount", "imageurl", "subcategoryid") VALUES ($1, $2, $3, $4, $5)', [name, price, discount, imageURL, id]);
+        const response: QueryResult = await pool.query('INSERT INTO Products ("name", "price", "discount", "imageurl", "subcategoryid","description") VALUES ($1, $2, $3, $4, $5,$6)', [name, price, discount, imageURL, id, description]);
 
         return res.status(200).json({
             filename: blobName,
@@ -127,7 +127,8 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
             containerName: process.env.CONTAINER_NAME as string
         }
 
-        const { name, price, discount } = req.body;
+        const { name, price, discount, description } = req.body;
+        console.log(description);
         const id: number = parseInt(req.params.id);
         const request = (req as MulterRequest)
 
@@ -146,8 +147,8 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
             });
 
             const imageURL: string = `${azureStorageConfig.blobURL}/${blobName}`
-            const response: QueryResult = await pool.query('UPDATE products SET "name" = $1, "price" = $2, "discount" = $3, "imageurl" = $4 WHERE id = $5',
-                [name, price, discount, imageURL, id]);
+            const response: QueryResult = await pool.query('UPDATE products SET "name" = $1, "price" = $2, "discount" = $3, "imageurl" = $4,"description"= $5 WHERE id = $6',
+                [name, price, discount, imageURL, description, id]);
 
             return res.status(200).json({
                 message: "Product updated succesfully !!!"
@@ -184,7 +185,7 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: number = parseInt(req.params.id)
-
+        console.log("Trying here");
         const response: QueryResult = await pool.query(`SELECT 
             CAST(products.id as INTEGER),
             products.name,
@@ -193,9 +194,9 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
             products.imageurl,
             CAST(products.subcategoryid as INTEGER),
             products.description
-        FROM products FROM products WHERE id = $1`, [id]);
+        FROM products WHERE id = $1`, [id]);
 
-        return res.status(200).json(response.rows)
+        return res.status(200).json(response.rows[0])
     } catch (err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }

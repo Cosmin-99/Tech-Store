@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-import { Redirect, Route, RouteProps } from "react-router";
+import { Redirect, Route, RouteProps } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 import { urls } from "../utils/routing";
 export const PrivateRoute: FC<RouteProps> = (props) => {
@@ -7,21 +7,14 @@ export const PrivateRoute: FC<RouteProps> = (props) => {
     const [user,] = useContext(UserContext);
     return <Route
         {...routeProps}
-        render={({ location }) => (
-            user ? (
-                children
-            ) : (
+    >
+        {user ?
+            (children) : (
                 <>
                     <Redirect
-                        to={{
-                            pathname: urls.shop(),
-                            state: location
-                        }}
-
+                        to={urls.shop()}
                     />
-                </>
-            )
-        )}
-    />
-
+                </>)
+        }
+    </Route>
 }
