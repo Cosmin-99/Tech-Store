@@ -13,6 +13,7 @@ import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
 import { addProduct } from "services/products.service";
 import { isAxiosError } from "utils/utilFunctions";
+import { adminUrls, useRouting } from "utils/routing";
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
     price: Yup.number().required("Required").min(0).typeError("Number is required in this field!"),
@@ -34,6 +35,7 @@ const initialValues = {
 export const ProductForm = () => {
     const [subcategories, setSubcategories] = useState<Category[]>([]);
     const [error, setError] = useState("");
+    const { routeTo } = useRouting();
     const { loading } = useLoadData(async () => {
         const req = await getAllSubcategories();
         setSubcategories(req.data);
@@ -51,6 +53,7 @@ export const ProductForm = () => {
 
                 console.log(values);
                 await addProduct(values);
+                routeTo(adminUrls.products);
             } catch (e) {
                 if (isAxiosError<any>(e)) {
                     const message = e.response!.data.message
@@ -74,7 +77,7 @@ export const ProductForm = () => {
                     <CardContent>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
-                                <Typography variant="h1">
+                                <Typography variant="h4" style={{ color: "#ff0033" }}>
                                     {error}
                                 </Typography>
                             </Grid>
@@ -150,13 +153,10 @@ export const ProductForm = () => {
                                             Upload Picture
                                 </Typography>
                                         <DropzoneArea
-
                                             acceptedFiles={['image/*']}
                                             dropzoneText={"Drag and drop an image here or click"}
-                                            showFileNamesInPreview={true}
                                             showFileNames={true}
                                             filesLimit={1}
-                                            showPreviewsInDropzone={true}
                                             onChange={e => {
                                                 setValues({
                                                     ...values,

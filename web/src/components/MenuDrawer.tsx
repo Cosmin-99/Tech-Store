@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     },
     whiteText: {
         color: "white",
-        fontFamily: "proxima-nova",
         userSelect: "none",
     },
     title: {

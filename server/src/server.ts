@@ -27,6 +27,7 @@ initDatabase({
 })
 
 const app = express();
+// app.disable('etag');
 const port = process.env.PORT || 4000;
 const upload = multer();
 app.use(cors())

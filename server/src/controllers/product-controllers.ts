@@ -39,7 +39,8 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
             containerName: process.env.CONTAINER_NAME as string
         }
 
-        const request = (req as MulterRequest)
+        const request = (req as MulterRequest);
+        console.log(request.file);
         const blobName = request.file.originalname;
         const stream = getStream(request.file.buffer);
         const streamLength = request.file.buffer.length;
@@ -81,7 +82,6 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
 export const getProductsBySubcategoryId = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: number = parseInt(req.params.id)
-
         const products: QueryResult = await pool.query(`
             SELECT CAST(products.id as INTEGER),
                     products.name,
@@ -93,20 +93,17 @@ export const getProductsBySubcategoryId = async (req: Request, res: Response, ne
                 INNER JOIN subcategories ON products.subcategoryid = subcategories.id
             WHERE subcategoryid = $1
         `, [id]);
-
         const subcategory: QueryResult = await pool.query(`
             SELECT subcategories.name, 
                    CAST(subcategories.categoryid as INTEGER) 
                 FROM subcategories WHERE id = $1
         `, [id]);
-
         const category: QueryResult = await pool.query(
-            `SELECT categories.name, CAST(categries.id as INTEGER) FROM categories WHERE id = $1`
+            `SELECT categories.name, CAST(categories.id as INTEGER) FROM categories WHERE id = $1`
             , [subcategory.rows[0].categoryid]);
-
         return res.status(200).json(
             {
-                category: { 
+                category: {
                     id: category.rows[0].id,
                     name: category.rows[0].name
                 },
