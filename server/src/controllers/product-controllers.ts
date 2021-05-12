@@ -61,28 +61,33 @@ export const getProductsBySubcategoryId = async (req: Request, res: Response, ne
         const id: number = parseInt(req.params.id)
 
         const products: QueryResult = await pool.query(`
-            SELECT products.id,
+            SELECT CAST(products.id as INTEGER),
                     products.name,
-                    products.price,
-                    products.discount,
+                    CAST(products.price as INTEGER),
+                    CAST(products.discount as INTEGER),
                     products.imageurl,
-                    products.subcategoryid
+                    CAST(products.subcategoryid as INTEGER)
             FROM products 
                 INNER JOIN subcategories ON products.subcategoryid = subcategories.id
             WHERE subcategoryid = $1
         `, [id]);
 
         const subcategory: QueryResult = await pool.query(`
-            SELECT subcategories.name, subcategories.categoryid FROM subcategories WHERE id = $1
+            SELECT subcategories.name, 
+                   CAST(subcategories.categoryid as INTEGER) 
+                FROM subcategories WHERE id = $1
         `, [id]);
 
         const category: QueryResult = await pool.query(
-            `SELECT categories.name FROM categories WHERE id = $1`
+            `SELECT categories.name, CAST(categries.id as INTEGER) FROM categories WHERE id = $1`
             , [subcategory.rows[0].categoryid]);
 
         return res.status(200).json(
             {
-                categoryName: category.rows[0].name,
+                category: { 
+                    id: category.rows[0].id,
+                    name: category.rows[0].name
+                },
                 subcategoryName: subcategory.rows[0].name,
                 products: products.rows
             }

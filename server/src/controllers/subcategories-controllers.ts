@@ -71,9 +71,9 @@ export const getSubcategoryByCategoryId = async (req: Request, res: Response, ne
 
         //prefer joins over selects as they're much faster in this case
         const subcategories: QueryResult = await pool.query(`
-        SELECT subcategories.id,
+        SELECT CAST(subcategories.id as INTEGER),
             subcategories.name,
-            subcategories.categoryid,
+            CAST(subcategories.categoryid as INTEGER),
             subcategories.imageurl
         FROM subcategories
             INNER JOIN categories ON subcategories.categoryid = categories.id

@@ -109,7 +109,7 @@ export const updateCatergory = async (req: Request, res: Response, next: NextFun
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: number = parseInt(req.params.id)
-        const response: QueryResult = await pool.query("SELECT * FROM Categories WHERE id = $1",[id]);
+        const response: QueryResult = await pool.query("SELECT CAST(categories.id as INTEGER), categories.name, categories.imageurl FROM categories WHERE id = $1",[id]);
 
         return res.status(200).json(response.rows)
     } catch(err) {
