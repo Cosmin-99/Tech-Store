@@ -8,6 +8,7 @@ import { authRouter } from './routes/authRoutes';
 import { appRoutes } from './routes/appRoutes';
 import cors from 'cors';
 import passport from 'passport';
+import { } from "multer";
 import { passportConfig } from './strategies/passport';
 import multer from "multer";
 
@@ -17,13 +18,13 @@ import { initDatabase } from './database/database';
 
 dotenv.config();
 initDatabase({
-        user: process.env.DATABASE_USER as string,
-        host: process.env.DATABASE_HOST as string,
-        password: process.env.DATABASE_PASSWORD as string,
-        database: process.env.DATABASE_NAME as string,
-        port: 5432,
-        ssl: true
-    })
+    user: process.env.DATABASE_USER as string,
+    host: process.env.DATABASE_HOST as string,
+    password: process.env.DATABASE_PASSWORD as string,
+    database: process.env.DATABASE_NAME as string,
+    port: 5432,
+    ssl: true
+})
 
 const app = express();
 const port = process.env.PORT || 4000;
