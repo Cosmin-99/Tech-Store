@@ -22,3 +22,9 @@ export const sendResetEmail = async (postData: {
 export const verifyToken = async () => {
     return axios.post(endpointURL + "/auth/verify-token", null, { headers });
 }
+export const updateUser = async (user: Omit<User, "password">) => {
+    return axios.post(endpointURL + "/app/user/update-user", user, { headers })
+}
+export const getCurrentSession = async () => {
+    return axios.get<User>(endpointURL + "/app/user/current-session", { headers });
+}

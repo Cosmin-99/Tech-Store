@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, Grid, makeStyles, TextField, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import { TechButton } from '../components/TechButton';
@@ -9,6 +9,8 @@ import { useLoadData } from '../hooks/useLoadData';
 import { LoadingComponent } from '../components/LoadingComponent';
 import { CreditCard } from '../models/CreditCard';
 import { UserContext } from '../contexts/userContext';
+import { updateUser } from "services/user.service"
+import { User } from 'models/User';
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('sm')]: {
@@ -51,17 +53,34 @@ export const UserDetails = () => {
         setOpen(true);
     }
     const { loading } = useLoadData(async () => {
-        // const addresses = await getAddresses();
-        setCurrentAddresses(addresses);
-        // const cards = await getCards();
-        setCards(cards);
+        const adresses = JSON.parse(user?.adresses ?? "[]");
+        if (Array.isArray(adresses)) {
+            setCurrentAddresses(adresses);
+        }
+        const cards = JSON.parse(user?.cards ?? "[]");
+        if (Array.isArray(cards)) {
+            setCards(cards);
+        }
         setUserIsChecked(true);
-    });
+    }, [user]);
+    const updateUserFn = useCallback(async (submitObject: any) => {
+        if (!user) {
+            return;
+        }
+        await updateUser(submitObject as any);
+    }, []);
     const [componentRender, setComponent] = React.useState("");
-    const saveUserDetails = (obj: {
+    const saveUserDetails = async (obj: {
         firstName: string;
         lastName: string;
     }) => {
+        const submitObject = {
+            firstname: obj.firstName,
+            lastname: obj.lastName,
+            adresses: JSON.stringify(addresses),
+            cards: JSON.stringify(cards)
+        }
+        await updateUser(submitObject as any);
         //TODO save in db user
     }
     const handleAddressView = () => {
@@ -80,6 +99,14 @@ export const UserDetails = () => {
                     initialValues={modifyCard}
                     onAdd={async card => {
                         // await addCard(card);
+                        console.log(cards);
+                        const submitObject = {
+                            firstname: user!.firstName,
+                            lastname: user!.lastName,
+                            adresses: JSON.stringify(addresses),
+                            cards: JSON.stringify([...cards, card])
+                        }
+                        await updateUserFn(submitObject);
                         setCards([...cards, card]);
                         setOpen(false);
                     }}
@@ -87,6 +114,13 @@ export const UserDetails = () => {
                         const index = cards.findIndex(c => c === modifyCard);
                         if (index !== -1) {
                             const newCards = cards.map((c, i) => i === index ? card : c);
+                            const submitObject = {
+                                firstname: user!.firstName,
+                                lastname: user!.lastName,
+                                adresses: JSON.stringify(addresses),
+                                cards: JSON.stringify(newCards)
+                            }
+                            await updateUserFn(submitObject);
                             setCards(newCards);
                             // await setDBCards(newCards);
                         }
@@ -101,6 +135,13 @@ export const UserDetails = () => {
                         const index = addresses.findIndex(address => address === modifyAddress);
                         if (index !== -1) {
                             const newAddresses = addresses.map((address, i) => i === index ? addr : address);
+                            const submitObject = {
+                                firstname: user!.firstName,
+                                lastname: user!.lastName,
+                                adresses: JSON.stringify(newAddresses),
+                                cards: JSON.stringify(cards)
+                            }
+                            await updateUserFn(submitObject);
                             setCurrentAddresses(newAddresses);
                             // await setAddresses(newAddresses);
                         }
@@ -108,6 +149,14 @@ export const UserDetails = () => {
                     }}
                     onAdd={async addr => {
                         // await addAddress(addr);
+                        console.log(addr);
+                        const submitObject = {
+                            firstname: user!.firstName,
+                            lastname: user!.lastName,
+                            adresses: JSON.stringify([...addresses, addr]),
+                            cards: JSON.stringify(cards)
+                        }
+                        await updateUserFn(submitObject);
                         setCurrentAddresses([...addresses, addr]);
                         setOpen(false);
                     }} />;
@@ -121,8 +170,16 @@ export const UserDetails = () => {
         const { card } = p;
 
         const onDeleteCard = async () => {
-            const newAddresses = cards.filter(s => s !== card);
-            setCards(newAddresses);
+            const newCards = cards.filter(s => s !== card);
+
+            const submitObject = {
+                firstname: user!.firstName,
+                lastname: user!.lastName,
+                adresses: JSON.stringify(addresses),
+                cards: JSON.stringify(newCards)
+            }
+            await updateUserFn(submitObject);
+            setCards(newCards);
             // await setDBCards(newAddresses);
         }
         const onModifyCard = () => {
@@ -166,6 +223,15 @@ export const UserDetails = () => {
 
         const onDeleteAddress = async () => {
             const newAddresses = addresses.filter(s => s !== address);
+
+            const submitObject = {
+                firstname: user!.firstName,
+                lastname: user!.lastName,
+                adresses: JSON.stringify(newAddresses),
+                cards: JSON.stringify(cards)
+            }
+            await updateUserFn(submitObject);
+            
             setCurrentAddresses(newAddresses);
             // await setAddresses(newAddresses);
         }

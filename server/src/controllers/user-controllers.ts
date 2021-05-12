@@ -4,23 +4,46 @@ import { pool } from "../database/database";
 import { ApiError } from "../error/ApiError";
 import { HttpStatusCode } from "../error/HttpStatusCodes";
 import { CurrentUser } from "../models/user.model";
-
+import jwt from "jsonwebtoken";
 export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
 
-        const {firstname, lastname} = req.body;
+        const { firstname, lastname, adresses, cards } = req.body;
         const email = (req.user as CurrentUser).email;
         console.log("H1")
-        const updateUserFields: QueryResult = await pool.query('UPDATE Users SET "firstname"=$1, "lastname"=$2 WHERE email = $3',
-        [firstname, lastname, email])
-
-        console.log(req.user);
-
+        const updateUserFields: QueryResult = await pool.query('UPDATE Users SET "firstname"=$1, "lastname"=$2,"adresses"=$3,"cards"=$4 WHERE email = $5',
+            [firstname, lastname, adresses, cards, email])
         return res.status(200).json({
             message: "User updated succesfully !!!"
         });
 
-    } catch(err) {
+    } catch (err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));
+    }
+}
+export const getCurrentSession = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const email = (req.user as CurrentUser).email;
+        const response = await pool.query(`SELECT * from users where email = $1`, [email]);
+        const token = jwt.sign({
+            firstName: response.rows[0].firstname,
+            lastName: response.rows[0].lastname,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            adresses: response.rows[0].adresses,
+            cards: response.rows[0].cards,
+        },
+            process.env.TOKEN_ENCRYPTION as string)
+        return res.status(200).json({
+            firstName: response.rows[0].firstname,
+            lastName: response.rows[0].lastname,
+            email: response.rows[0].email,
+            role: response.rows[0].role,
+            adresses: response.rows[0].adresses,
+            cards: response.rows[0].cards,
+            token
+        })
+    } catch (err) {
+        next(err);
     }
 }

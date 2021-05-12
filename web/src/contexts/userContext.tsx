@@ -2,7 +2,8 @@ import { createContext, Dispatch, FC, useEffect, useState } from "react";
 import { User } from "../models/User";
 import { userLocalStorageKey } from "../utils/constants";
 import { headers } from "../services/config";
-import { verifyToken } from "../services/user.service";
+import { getCurrentSession, verifyToken } from "../services/user.service";
+import { storeUserInStorage } from "utils/utilFunctions";
 
 
 type UserValue = Omit<User, "password"> | null;
@@ -23,7 +24,11 @@ export const UserContextProvider: FC = props => {
                     headers.Authorization = `Bearer ${parsedUser.token}`;
                     const token = await verifyToken();
                     if (token.data.passed) {
-                        setUser(parsedUser);
+                        const req = await getCurrentSession();
+                        headers.Authorization = `Bearer ${req.data.token}`;
+                        storeUserInStorage(req.data);
+                        setUser(req.data);
+                        // setUser(parsedUser);
                     } else {
                         headers.Authorization = ``;
                         setUser(null!);

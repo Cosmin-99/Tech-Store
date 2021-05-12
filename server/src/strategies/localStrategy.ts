@@ -23,6 +23,8 @@ export function localStrategy() {
             lastName: response.rows[0].lastname,
             email: response.rows[0].email,
             role: response.rows[0].role,
+            adresses: response.rows[0].adresses,
+            cards: response.rows[0].cards,
         },
             process.env.TOKEN_ENCRYPTION as string)
 
@@ -32,6 +34,8 @@ export function localStrategy() {
             lastName: response.rows[0].lastname,
             email: response.rows[0].email,
             role: response.rows[0].role,
+            adresses: response.rows[0].adresses,
+            cards: response.rows[0].cards,
             token
         })
     }));

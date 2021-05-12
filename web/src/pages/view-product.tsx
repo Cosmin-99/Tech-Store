@@ -58,6 +58,7 @@ export const ViewProduct = (p: RouteComponentProps<{ product: string }>) => {
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
     const { loading } = useLoadData(async () => {
         // const product = await getProductById(p.match.params.product);
+
         const product = {
             name: "Produs",
             pret: 500,

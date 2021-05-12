@@ -1,5 +1,5 @@
 import { makeStyles, Chip, Card, CardContent, CardActions } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Product } from '../models/Product';
 // import { CartContext } from '../utils/contexts';
 import { urls, useRouting } from '../utils/routing';
@@ -48,10 +48,10 @@ export const ProductDisplay = (p: {
 }) => {
     const { product, id } = p;
     const { discount, name, price, imageurl } = product;
-    console.log(product);
+    // console.log(product);
+    const { routeTo } = useRouting();
     const classes = useStyles();
     // const cart = useContext(CartContext);
-    const { routeTo } = useRouting();
     let percent = 0;
     if (discount) {
         percent = 100 - Math.round((100 * (price - discount)) / price)
@@ -64,7 +64,7 @@ export const ProductDisplay = (p: {
         <Chip label={`-${percent}%`} className={classes.chipDiscount} style={{ backgroundColor: discount ? "" : "transparent", color: discount ? "" : "transparent" }} variant="default" />
         <Card>
             <CardContent onClick={() => {
-                // routeTo(urls.viewProduct, { product: id });
+                routeTo(urls.product, { id: id.toString() });
             }}>
                 <div style={{
                     display: "flex",

@@ -30,7 +30,7 @@ export const Register = () => {
     const [stringError, setStringError] = useState("");
 
     const { routeTo } = useRouting();
-    const keys = getKeys<User>({
+    const keys = getKeys<Omit<User, "adresses" | "cards" | "cart">>({
         email: 1,
         firstName: 1,
         lastName: 1,
