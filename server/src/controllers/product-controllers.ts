@@ -88,7 +88,8 @@ export const getProductsBySubcategoryId = async (req: Request, res: Response, ne
                     CAST(products.price as INTEGER),
                     CAST(products.discount as INTEGER),
                     products.imageurl,
-                    CAST(products.subcategoryid as INTEGER)
+                    CAST(products.subcategoryid as INTEGER),
+                    products.description
             FROM products 
                 INNER JOIN subcategories ON products.subcategoryid = subcategories.id
             WHERE subcategoryid = $1
@@ -184,13 +185,15 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
     try {
         const id: number = parseInt(req.params.id)
 
-        const response: QueryResult = await pool.query(`SELECT CAST(products.id as INTEGER),
-        products.name,
-        CAST(products.price as INTEGER),
-        CAST(products.discount as INTEGER),
-        products.imageurl,
-        CAST(products.subcategoryid as INTEGER)
-FROM products FROM products WHERE id = $1`, [id]);
+        const response: QueryResult = await pool.query(`SELECT 
+            CAST(products.id as INTEGER),
+            products.name,
+            CAST(products.price as INTEGER),
+            CAST(products.discount as INTEGER),
+            products.imageurl,
+            CAST(products.subcategoryid as INTEGER),
+            products.description
+        FROM products FROM products WHERE id = $1`, [id]);
 
         return res.status(200).json(response.rows)
     } catch (err) {
