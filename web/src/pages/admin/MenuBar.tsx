@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 export const MenuBar = () => {
     const classes = useStyles();
     const location = useLocation();
-    const [path, setPath] = useState("");
+    const [path, setPath] = useState("categories");
     useEffect(() => {
         const path = location.pathname.split("/")[2];
         setPath(path);

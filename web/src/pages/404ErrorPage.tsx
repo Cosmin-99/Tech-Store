@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 const img = process.env.PUBLIC_URL + "/Splat.png";
-const href = "/src/App.tsx";
 const rainbow = keyframes`
     0%{color:red;}
     17%{color:orange;}

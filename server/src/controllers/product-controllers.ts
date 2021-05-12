@@ -9,8 +9,20 @@ import { HttpStatusCode } from '../error/HttpStatusCodes';
 interface MulterRequest extends Request {
     file: any;
 }
-
-export const addProduct = async (req: Request, res: Response): Promise<Response | void> => {
+export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const subcategories = await pool.query(`
+        SELECT 
+            P.*,
+            S.name as subcategoryname
+        FROM products as P
+        LEFT JOIN subcategories as S ON S.id = P.subcategoryid  `);
+        return res.status(200).json(subcategories.rows)
+    } catch (e) {
+        next(e);
+    }
+}
+export const addProduct = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const {
             name,
@@ -36,23 +48,33 @@ export const addProduct = async (req: Request, res: Response): Promise<Response 
 
         blobService.createBlockBlobFromStream(azureStorageConfig.containerName, `${blobName}`, stream, streamLength, err => {
             if (err) {
-                return res.status(404).json(err);
-            } else {
-                return res.status(200).json({
-                    filename: blobName,
-                    originalname: request.file.originalname,
-                    size: streamLength,
-                    path: `${azureStorageConfig.containerName}/${blobName}`,
-                    url: `${azureStorageConfig.blobURL}/${blobName}`
-                });
+                next(err);
+                return
+                // return res.status(404).json(err);
             }
+            // else {
+            //     return res.status(200).json({
+            //         filename: blobName,
+            //         originalname: request.file.originalname,
+            //         size: streamLength,
+            //         path: `${azureStorageConfig.containerName}/${blobName}`,
+            //         url: `${azureStorageConfig.blobURL}/${blobName}`
+            //     });
+            // }
         });
 
         const imageURL = `${azureStorageConfig.blobURL}/${blobName}`
         const response: QueryResult = await pool.query('INSERT INTO Products ("name", "price", "discount", "imageurl", "subcategoryid") VALUES ($1, $2, $3, $4, $5)', [name, price, discount, imageURL, id]);
 
+        return res.status(200).json({
+            filename: blobName,
+            originalname: request.file.originalname,
+            size: streamLength,
+            path: `${azureStorageConfig.containerName}/${blobName}`,
+            url: `${azureStorageConfig.blobURL}/${blobName}`
+        });
     } catch (err) {
-        return res.status(400).json(err)
+        next(err);
     }
 }
 
@@ -121,9 +143,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
 
             blobService.createBlockBlobFromStream(azureStorageConfig.containerName, `${blobName}`, stream, streamLength, err => {
                 if (err) {
-                    return res.status(404).json(err);
-                } else {
-                    return;
+                    return next(err);
                 }
             });
 

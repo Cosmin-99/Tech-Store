@@ -7,9 +7,8 @@ import { TechInput } from '../components/TechInput';
 import { FormFeedback } from '../components/Feedback';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import { User } from '../models/User';
-import { getKeys, storeUserInStorage } from '../utils/utilFunctions';
+import { getKeys, isAxiosError, storeUserInStorage } from '../utils/utilFunctions';
 import { urls, useRouting } from '../utils/routing';
-import { AxiosError } from 'axios';
 import GoogleLogin, { GoogleLoginResponse, } from 'react-google-login';
 import { loginWithGoogle, userLogin } from '../services/user.service';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -44,9 +43,6 @@ const responseGoogle = async (response: GoogleLoginResponse) => {
         await loginWithGoogle(response.tokenId);
         console.log(response);
     }
-}
-function isAxiosError<T>(opt: any): opt is AxiosError<T> {
-    return "isAxiosError" in opt;
 }
 export const Login = () => {
     useTitle("Login");

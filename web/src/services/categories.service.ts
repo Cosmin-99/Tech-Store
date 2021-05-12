@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios"
+import { generateFormData } from "utils/utilFunctions";
 import { Category } from "../models/Category";
 import { endpointURL, headers } from "./config"
 
@@ -14,4 +15,13 @@ export const getSubcategoriesById = (id: string): Promise<AxiosResponse<{
     subcategories: Category[];
 }>> => {
     return axios.get(endpointURL + `/app/sub-categories/${id}`);
+}
+export const addSubcategory = (subcategory: {
+    name: string;
+    file: File | null;
+    categoryid: number;
+}) => {
+    const fd = new FormData();
+    generateFormData(fd, subcategory);
+    return axios.post(endpointURL + `/app/add-subcategory/${subcategory.categoryid}`, fd, { headers })
 }
