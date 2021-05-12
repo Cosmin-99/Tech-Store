@@ -9,7 +9,7 @@ import { Shop } from './pages/shop';
 import { route, urls } from './utils/routing';
 import ContextsWrapper from "./contexts/contextsWrapper"
 import { ViewSubCategory } from './pages/view-subcategory';
-import { ViewProduct } from './pages/view-products';
+import { ViewProduct } from './pages/view-product';
 import { UserProfile } from './pages/user-profile';
 import { UserDetails } from './pages/user-details';
 import NotFound from './pages/404ErrorPage';
@@ -17,6 +17,7 @@ import NotFound from './pages/404ErrorPage';
 import { PrivateRoute } from './components/PrivateRoute';
 import { AdminRoute } from './components/AdminRoute';
 import AdminDashboard from "./pages/admin/dashboard"
+import { ViewProducts } from 'pages/view-products';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -86,6 +87,11 @@ function App() {
                   <Route
                     path={route(urls.notFound)}
                     component={NotFound}
+                  />
+                  <Route
+                    exact
+                    path={route(urls.products, ["subCategory"])}
+                    component={ViewProducts}
                   />
                   <Route
                     exact

@@ -7,6 +7,7 @@ import Link from '@material-ui/core/Link';
 import { RouteComponentProps } from 'react-router-dom';
 import { LoadingComponent } from '../components/LoadingComponent';
 import { getSubcategoriesById } from '../services/categories.service';
+import { useTitle } from 'hooks/useTitle';
 const useStyles = makeStyles((theme) => ({
     categoryText: {
         userSelect: "none",
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ViewSubCategory = (props: RouteComponentProps<{ id: string }>) => {
-
+    useTitle("Subcategories")
     const classes = useStyles();
     const { routeTo } = useRouting();
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -59,6 +60,8 @@ export const ViewSubCategory = (props: RouteComponentProps<{ id: string }>) => {
     }) => {
         const { category } = p;
         return <div className={classes.categoryDisplay} onClick={() => {
+            console.log(category.id);
+            routeTo(urls.products, { subCategory: category.id.toString() });
         }}>
             <Card >
                 <CardContent>

@@ -25,10 +25,6 @@ export function isAxiosError<T>(opt: any): opt is AxiosError<T> {
 
 export function generateFormData<T extends Record<string, any>>(fd: FormData, values: T) {
     const { file, ...submitValues } = values;
-    let blob = null! as Blob;
-    if (file) {
-        blob = new Blob([file]);
-    }
     (Object.keys(submitValues) as any[]).forEach((key) => fd.append(key, submitValues[key].toString()))
-    fd.append("image", blob);
+    fd.append("image", file);
 }

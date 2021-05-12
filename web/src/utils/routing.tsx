@@ -33,7 +33,8 @@ export const urls = {
 
 
     subcategory: (p: { id: string }) => `/shop/category/${p.id}`,
-    product: (p: { id: string }) => `/shop/products/${p.id}`,
+    product: (p: { id: string }) => `/shop/product/${p.id}`,
+    products: (p: { subCategory: string }) => `/shop/products/${p.subCategory}`,
     userProfile: () => `/profile`,
     notFound: () => `/404ErrorPage`
 };

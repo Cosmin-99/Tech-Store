@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
         textOverflow: "ellipsis",
         cursor: "pointer",
         overflow: "hidden",
-        fontFamily: "proxima-nova",
         color: "#305F72"
     }
 }))

@@ -3,6 +3,6 @@ export interface Product {
     name: string,
     imageurl?: string,
     id: string;
-    pret: number;
+    price: number;
     discount?: number;
 }

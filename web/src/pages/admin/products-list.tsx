@@ -3,17 +3,18 @@ import { useLoadData } from "hooks/useLoadData";
 import { Avatar } from "@material-ui/core"
 import { ProductsList as IProductList } from "models/ProductsList";
 import { useState } from "react";
-import { getAllProducts } from "services/products.service";
+import { deleteProduct, getAllProducts } from "services/products.service";
 import { adminUrls, useRouting } from "utils/routing";
 import { LoadingComponent } from "components/LoadingComponent"
 
 export const ProductsList = () => {
     const { routeTo } = useRouting();
     const [products, setProducts] = useState<IProductList[]>([]);
+    const [refresh, setRefresh] = useState(false);
     const { loading } = useLoadData(async () => {
         const z = await getAllProducts();
         setProducts(z.data);
-    });
+    }, [refresh]);
     if (loading) {
         return <LoadingComponent />
     }
@@ -48,6 +49,18 @@ export const ProductsList = () => {
                 tooltip: "Add Product",
                 onClick: () => {
                     routeTo(adminUrls.productAdd);
+                }
+            }, {
+                isFreeAction: false,
+                tooltip: "Delete",
+                icon: "delete",
+                onClick: async (_, rowData) => {
+                    if (!Array.isArray(rowData)) {
+                        if (window.confirm(`Are you sure you want to delete ${rowData.name}?`)) {
+                            await deleteProduct(rowData.id);
+                            setRefresh(!refresh);
+                        }
+                    }
                 }
             }]}
         />
