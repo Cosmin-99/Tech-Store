@@ -88,6 +88,7 @@ export const getProductsBySubcategoryId = async (req: Request, res: Response, ne
             }
         )
     } catch (err) {
+        console.log(err)
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }

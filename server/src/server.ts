@@ -13,7 +13,17 @@ import multer from "multer";
 
 import { apiErrorHandler } from './error/apiErrorHandler';
 import { userRoutes } from './routes/userRoutes';
+import { initDatabase } from './database/database';
+
 dotenv.config();
+initDatabase({
+        user: process.env.DATABASE_USER as string,
+        host: process.env.DATABASE_HOST as string,
+        password: process.env.DATABASE_PASSWORD as string,
+        database: process.env.DATABASE_NAME as string,
+        port: 5432,
+        ssl: true
+    })
 
 const app = express();
 const port = process.env.PORT || 4000;

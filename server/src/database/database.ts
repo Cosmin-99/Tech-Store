@@ -1,9 +1,9 @@
-import { Pool } from "pg";
+import { Pool, PoolConfig } from "pg";
 
-export const pool: Pool = new Pool({
-    user: "postgres",
-    host: "localhost",
-    password: "postgresadmin",
-    database: "Store",
-    port: 5432
-})
+
+export let pool: Pool = null!
+
+export function initDatabase(config: PoolConfig) {
+    pool = new Pool(config)
+}
+
