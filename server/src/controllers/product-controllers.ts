@@ -182,3 +182,21 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }
+
+export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id: number = parseInt(req.params.id)
+
+        const response: QueryResult = await pool.query(`SELECT CAST(products.id as INTEGER),
+        products.name,
+        CAST(products.price as INTEGER),
+        CAST(products.discount as INTEGER),
+        products.imageurl,
+        CAST(products.subcategoryid as INTEGER)
+FROM products FROM products WHERE id = $1`, [id]);
+
+        return res.status(200).json(response.rows)
+    } catch (err) {
+        next(new ApiError(HttpStatusCode.BadRequest, err));
+    }
+}
