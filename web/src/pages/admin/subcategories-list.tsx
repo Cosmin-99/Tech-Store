@@ -5,7 +5,9 @@ import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
 import { getAllSubcategories } from "services/categories.service";
 import { Avatar } from "@material-ui/core";
+import { adminUrls, useRouting } from "utils/routing";
 export const SubcategoriesList = () => {
+    const { routeTo } = useRouting();
     const [categories, setCategories] = useState<Category[]>([]);
     const { loading } = useLoadData(async () => {
         const req = await getAllSubcategories();
@@ -20,6 +22,7 @@ export const SubcategoriesList = () => {
 
     return <div className="table-list-pagination-bottom">
         <MaterialTable<Category>
+            title="Subcategories"
             columns={[
                 { title: "ID", field: "id" },
                 { title: "Name", field: "name" },
@@ -40,6 +43,14 @@ export const SubcategoriesList = () => {
             options={{
                 search: true
             }}
+            actions={[{
+                isFreeAction: true,
+                icon: "add",
+                tooltip: "Add Subcategory",
+                onClick: () => {
+                    routeTo(adminUrls.subCategoryAdd);
+                }
+            }]}
         />
     </div>
 

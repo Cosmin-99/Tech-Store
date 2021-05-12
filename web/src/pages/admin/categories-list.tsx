@@ -20,6 +20,7 @@ export const CategoriesList = () => {
 
     return <div className="table-list-pagination-bottom">
         <MaterialTable
+            title="Categories"
             columns={[
                 { title: "ID", field: "id" },
                 { title: "Name", field: "name" },

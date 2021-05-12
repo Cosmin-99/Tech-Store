@@ -8,34 +8,29 @@ import { SingleSelectAutocomplete } from "components/SingleSelectAutocomplete";
 import { TechButton } from "components/TechButton";
 import { useState } from "react";
 import { useLoadData } from "hooks/useLoadData";
-import { getAllSubcategories } from "services/categories.service";
+import { addSubcategory, getCategories } from "services/categories.service";
 import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
-import { addProduct } from "services/products.service";
 import { isAxiosError } from "utils/utilFunctions";
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
-    price: Yup.number().required("Required").min(0).typeError("Number is required in this field!"),
-    discount: Yup.number().required("Required").min(0).typeError("Number is required in this field!"),
-    subcategoryid: Yup.number().required("Required"),
-    subcategory: Yup.object().required("Required").typeError("Required")
+    categoryid: Yup.number().required("Required"),
+    category: Yup.object().required("Required").typeError("Required")
 });
 
 const Card = styled(MuiCard)(spacing);
 
 const initialValues = {
     name: "",
-    price: 0,
-    file: null as File | null,
-    discount: 0,
-    subcategoryid: 0,
-    subcategory: null as (Category | null),
+    category: null as Category | null,
+    categoryid: 0,
+    file: null as File | null
 }
-export const ProductForm = () => {
+export const SubcategoriesForm = () => {
     const [subcategories, setSubcategories] = useState<Category[]>([]);
     const [error, setError] = useState("");
     const { loading } = useLoadData(async () => {
-        const req = await getAllSubcategories();
+        const req = await getCategories();
         setSubcategories(req.data);
     }, []);
 
@@ -46,11 +41,11 @@ export const ProductForm = () => {
         initialValues={initialValues}
         validateOnMount={true}
         validationSchema={validationSchema}
-        onSubmit={async (values, formikHelpers) => {
+        onSubmit={async (values) => {
             try {
-
                 console.log(values);
-                await addProduct(values);
+                await addSubcategory(values);
+                // await addProduct(values);
             } catch (e) {
                 if (isAxiosError<any>(e)) {
                     const message = e.response!.data.message
@@ -92,53 +87,23 @@ export const ProductForm = () => {
                                     onBlur={handleBlur}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    label="Price"
-                                    type="numeric"
-                                    id="price"
-                                    required
-                                    fullWidth
-                                    value={values.price}
-                                    error={Boolean(touched.price && errors.price)}
-                                    helperText={touched.price && errors.price}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    label="Discount"
-                                    type="numeric"
-                                    id="discount"
-                                    required
-                                    fullWidth
-                                    value={values.discount}
-                                    error={Boolean(touched.discount && errors.discount)}
-                                    helperText={touched.discount && errors.discount}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                            </Grid>
                             <Grid item xs={12}>
                                 <SingleSelectAutocomplete
                                     renderOption={opt => opt?.name ?? ""}
-                                    value={values.subcategory}
+                                    value={values.category}
                                     InputProps={{
-                                        label: "Subcategory",
+                                        label: "Category",
                                         variant: "outlined",
-                                        error: Boolean(errors.subcategory),
-                                        helperText: errors.subcategory,
+                                        error: Boolean(errors.category),
+                                        helperText: errors.category,
                                     }}
                                     required
                                     options={subcategories}
                                     onChange={value => {
                                         setValues({
                                             ...values,
-                                            subcategory: value,
-                                            subcategoryid: value ? value.id : 0,
+                                            category: value,
+                                            categoryid: value ? value.id : 0,
                                         });
                                     }}
                                 />

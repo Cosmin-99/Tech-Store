@@ -7,6 +7,7 @@ import { Header } from "./Header";
 import { MenuBar } from "./MenuBar"
 import { ProductForm } from "./product-form";
 import { ProductsList } from "./products-list";
+import { SubcategoriesForm } from "./subcategories-form";
 import { SubcategoriesList } from "./subcategories-list";
 
 
@@ -44,6 +45,16 @@ const Dashboard = () => {
                         exact
                         path={route(adminUrls.productAdd)}
                         component={ProductForm}
+                    />
+                    <Route
+                        exact
+                        path={route(adminUrls.subCategoryAdd)}
+                        component={SubcategoriesForm}
+                    />
+                    <Route
+                        exact
+                        path={route(adminUrls.subCategoryEdit, ["id"])}
+                        component={SubcategoriesForm}
                     />
                 </Switch>
             </Container>

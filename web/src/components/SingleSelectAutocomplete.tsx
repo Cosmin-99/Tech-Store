@@ -70,6 +70,7 @@ export function SingleSelectAutocomplete<
                     {...params}
                     {...InputProps}
                     fullWidth
+                    
                     required={required ?? false}
                     autoComplete="off"
                     InputProps={{

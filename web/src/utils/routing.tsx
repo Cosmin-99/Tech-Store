@@ -11,8 +11,13 @@ const adminPrefix = "admin";
 export const adminUrls = {
     categories: () => `/${adminPrefix}/categories`,
     subCategories: () => `/${adminPrefix}/sub-categories`,
+    subCategoryAdd: () => `/${adminPrefix}/sub-categories/add`,
+    subCategoryEdit: (p: { id: number }) => `/${adminPrefix}/sub-categories/edit/${p.id}`,
+
+
     products: () => `/${adminPrefix}/products`,
     productAdd: () => `/${adminPrefix}/products/add`,
+    productEdit: (p: { id: number }) => `/${adminPrefix}/products/${p.id}`,
     users: () => `/${adminPrefix}/users`
 }
 
@@ -30,7 +35,7 @@ export const urls = {
     subcategory: (p: { id: string }) => `/shop/category/${p.id}`,
     product: (p: { id: string }) => `/shop/products/${p.id}`,
     userProfile: () => `/profile`,
-    notFound: ()=>`/404ErrorPage`
+    notFound: () => `/404ErrorPage`
 };
 
 export function routeTo(p: H.History, fn: () => string): void
