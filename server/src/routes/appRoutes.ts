@@ -5,7 +5,9 @@ import { addCategory, deleteCategory, getCategories, getCategoryById, updateCate
 import { addProduct, deleteProduct, getProductById, getProducts, getProductsBySubcategoryId, updateProduct } from "../controllers/product-controllers";
 import { sendEmailProviders } from "../controllers/sendEmailController";
 import { addSubcategory, deleteSubcategory, getSubcategories, getSubcategoryByCategoryId, updateSubcategory } from "../controllers/subcategories-controllers";
-import { tokenMiddleWare } from "../utils/tokenMiddleware";
+import { adminMiddleWare } from "../middlewares/adminMiddleware";
+import { tokenMiddleWare } from "../middlewares/tokenMiddleware";
+import { providerMiddleWare } from "../middlewares/providerMiddleware";
 
 export const appRoutes: Router = Router();
 const inMeoryStorage: StorageEngine = multer.memoryStorage();
@@ -26,10 +28,9 @@ appRoutes.post("/add-subcategory/:id", singleFileUpload.single('image'), addSubc
 appRoutes.put("/subcategory/:id", singleFileUpload.single('image'), updateSubcategory);
 appRoutes.delete("/subcategory/:id", deleteSubcategory);
 
-
 //products
-appRoutes.post("/add-product/:id", singleFileUpload.single('image'), addProduct);
-appRoutes.get("/products/:id", getProductsBySubcategoryId);
+appRoutes.post("/add-product/:id", providerMiddleWare, singleFileUpload.single('image'), addProduct);
+appRoutes.get("/products/:id",getProductsBySubcategoryId);
 appRoutes.put("/products/:id", singleFileUpload.single('image'), updateProduct);
 appRoutes.delete("/products/:id", deleteProduct);
 appRoutes.get("/all-products", tokenMiddleWare, getProducts);

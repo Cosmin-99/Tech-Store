@@ -6,12 +6,12 @@ import { facebookLogin } from "../controllers/facebookLoginController";
 import { googleLogin } from "../controllers/googleLoginController";
 import { resetPassword } from "../controllers/resetPasswordController";
 import { sendEmail } from "../controllers/sendEmailController";
+import { adminMiddleWare } from "../middlewares/adminMiddleware";
+import { tokenMiddleWare } from "../middlewares/tokenMiddleware";
 export const authRouter: Router = Router();
 
 authRouter.post("/register", userRegister);
-authRouter.post("/login", passport.authenticate('local'), (req, res) => {
-    res.json(req.user);
-});
+authRouter.post("/login",userLogin);
 authRouter.post("/google-login", googleLogin);
 authRouter.post("/facebook-login", passport.authenticate('facebook'));
 authRouter.post("/reset-password", sendEmail);

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getCurrentSession, updateUser } from "../controllers/user-controllers";
-import { tokenMiddleWare } from "../utils/tokenMiddleware";
+import { tokenMiddleWare } from "../middlewares/tokenMiddleware";
 
 export const userRoutes: Router = Router();
 

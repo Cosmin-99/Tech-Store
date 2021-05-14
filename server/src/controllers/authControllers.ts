@@ -97,7 +97,11 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
         }
         const token = jwt.sign({
             firstName: response.rows[0].firstname,
-            email: response.rows[0].email
+            email: response.rows[0].email,
+            lastName: response.rows[0].lastname,
+            role: response.rows[0].role,
+            adresses: response.rows[0].adresses,
+            cards: response.rows[0].cards,
         },
             process.env.TOKEN_ENCRYPTION as string)
 
