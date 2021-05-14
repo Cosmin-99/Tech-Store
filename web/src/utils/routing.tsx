@@ -29,6 +29,8 @@ export const urls = {
     register: () => "/register",
     forgotPassword: () => "/reset-password",
     shop: () => "/shop",
+
+    cart: () => `/cart`,
     checkout: () => "/checkout",
     favorite: () => "/user/favorite",
     comenzi: () => "/user/comenzi",

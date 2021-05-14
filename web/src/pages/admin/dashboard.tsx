@@ -49,6 +49,11 @@ const Dashboard = () => {
                     />
                     <Route
                         exact
+                        path={route(adminUrls.productEdit, ["id"])}
+                        component={ProductForm}
+                    />
+                    <Route
+                        exact
                         path={route(adminUrls.subCategoryAdd)}
                         component={SubcategoriesForm}
                     />

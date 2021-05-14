@@ -1,10 +1,11 @@
 import { AppBar, Toolbar, Typography, InputBase, makeStyles, fade, Badge } from "@material-ui/core";
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { TechButton } from "./TechButton";
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { urls, useRouting } from "../utils/routing";
 import Autocomplete from "@material-ui/lab/Autocomplete/Autocomplete";
+import { CartContext } from "contexts/cartContext";
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -93,8 +94,8 @@ const useStyles = makeStyles((theme) => ({
 export const SearchBarMenu = () => {
     const classes = useStyles();
     const { routeTo } = useRouting();
-
-    const [products, ] = useState<any[]>([]);
+    const cartHook = useContext(CartContext);
+    const [products,] = useState<any[]>([]);
 
     return <div>
         <AppBar position="static" className={classes.appBar}>
@@ -149,8 +150,8 @@ export const SearchBarMenu = () => {
                     />
                 </div>
                 <div>
-                    <TechButton title="Cos de cumparaturi">
-                        <Badge badgeContent={5} color="secondary">
+                    <TechButton title="Cos de cumparaturi" onClick={() => routeTo(urls.cart)}>
+                        <Badge badgeContent={cartHook.cart.length} color="secondary">
                             <ShoppingCartIcon style={{ color: "white" }} />
                         </Badge>
                     </TechButton>
