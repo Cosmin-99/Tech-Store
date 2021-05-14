@@ -14,10 +14,14 @@ import { UserProfile } from './pages/user-profile';
 import { UserDetails } from './pages/user-details';
 import NotFound from './pages/404ErrorPage';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { PrivateRoute } from './components/PrivateRoute';
 import { AdminRoute } from './components/AdminRoute';
 import AdminDashboard from "./pages/admin/dashboard"
 import { ViewProducts } from 'pages/view-products';
+import { ViewCart } from 'pages/view-cart';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -91,6 +95,10 @@ function App() {
                     component={NotFound}
                   />
                   <Route
+                    path={route(urls.cart)}
+                    component={ViewCart}
+                  />
+                  <Route
                     exact
                     path={route(urls.products, ["subCategory"])}
                     component={ViewProducts}
@@ -106,9 +114,10 @@ function App() {
               </Container>
             </Route>
           </Switch>
+          <ToastContainer />
         </ContextsWrapper>
       </Grid>
-    </Grid>
+    </Grid >
   );
 }
 

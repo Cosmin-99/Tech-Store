@@ -1,7 +1,7 @@
 import { makeStyles, Chip, Card, CardContent, CardActions } from '@material-ui/core';
-import { useState } from 'react';
+import { CartContext } from 'contexts/cartContext';
+import { useContext, useState } from 'react';
 import { Product } from '../models/Product';
-// import { CartContext } from '../utils/contexts';
 import { urls, useRouting } from '../utils/routing';
 import { TechButton } from './TechButton';
 const useStyles = makeStyles((theme) => ({
@@ -47,11 +47,11 @@ export const ProductDisplay = (p: {
     id: string,
 }) => {
     const { product, id } = p;
+
+    const cartHook = useContext(CartContext);
     const { discount, name, price, imageurl } = product;
-    // console.log(product);
     const { routeTo } = useRouting();
     const classes = useStyles();
-    // const cart = useContext(CartContext);
     let percent = 0;
     if (discount) {
         percent = 100 - Math.round((100 * (price - discount)) / price)
@@ -91,15 +91,14 @@ export const ProductDisplay = (p: {
                     disabled={disabled}
                     variant="contained"
                     onClick={async () => {
-                        // cart.add(product);
-
+                        cartHook.add(product);
                         setDisabled(true);
                         await sleep(1000);
                         setDisabled(false);
                     }}
                 >
                     Adauga in cos
-                        </TechButton>
+                </TechButton>
             </CardActions>
         </Card>
     </div>

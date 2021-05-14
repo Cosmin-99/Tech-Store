@@ -62,6 +62,15 @@ export const ProductsList = () => {
                         }
                     }
                 }
+            }, {
+                isFreeAction: false,
+                tooltip: "Edit",
+                icon: "edit",
+                onClick: async (_, rowData) => {
+                    if (!Array.isArray(rowData)) {
+                        routeTo(adminUrls.productEdit, { id: rowData.id });
+                    }
+                }
             }]}
         />
     </div>

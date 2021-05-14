@@ -185,7 +185,6 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: number = parseInt(req.params.id)
-        console.log("Trying here");
         const response: QueryResult = await pool.query(`SELECT 
             CAST(products.id as INTEGER),
             products.name,

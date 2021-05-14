@@ -11,11 +11,12 @@ import { useLoadData } from "hooks/useLoadData";
 import { getAllSubcategories } from "services/categories.service";
 import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
-import { addProduct } from "services/products.service";
+import { addProduct, getProductById } from "services/products.service";
 import { isAxiosError } from "utils/utilFunctions";
 import { adminUrls, useRouting } from "utils/routing";
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { RouteComponentProps } from "react-router-dom";
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
     price: Yup.number().required("Required").min(0).typeError("Number is required in this field!"),
@@ -35,10 +36,29 @@ const initialValues = {
     subcategory: null as (Category | null),
     description: [] as Array<[string, string]>
 }
-export const ProductForm = () => {
+export const ProductForm = (p: RouteComponentProps<{ id: string }>) => {
     const [subcategories, setSubcategories] = useState<Category[]>([]);
     const [error, setError] = useState("");
     const { routeTo } = useRouting();
+    const [product, setProduct] = useState<typeof initialValues>(null!);
+    useLoadData(async () => {
+        const id = p.match.params.id;
+        if (id) {
+            const req = await getProductById(id)
+            const product = req.data;
+            let desc: any[] = [];
+            if (product.description) {
+                const parsed = JSON.parse(product.description);
+                const description = Object
+                    .keys(parsed)
+                    .map((key, i) => ([key, parsed[key]]))
+                desc = description;
+            }
+            setProduct({ ...product, description: desc } as any);
+        } else {
+            setProduct(initialValues);
+        }
+    }, []);
     const { loading } = useLoadData(async () => {
         const req = await getAllSubcategories();
         setSubcategories(req.data);
@@ -47,8 +67,11 @@ export const ProductForm = () => {
     if (loading) {
         return <LoadingComponent />;
     }
+    if (!product) {
+        return <div>NO PRODUCT</div>
+    }
     return <Formik
-        initialValues={initialValues}
+        initialValues={product}
         validateOnMount={true}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
@@ -58,7 +81,13 @@ export const ProductForm = () => {
                         .description
                         .reduce((acc, current) => ({ ...acc, [current[0]]: current[1] }), {}));
                 console.log(stringifedDetails);
-                await addProduct({ ...values, description: stringifedDetails });
+
+                const id = p.match.params.id;
+                if (id) {
+                    //TODO update product
+                } else {
+                    await addProduct({ ...values, description: stringifedDetails });
+                }
                 routeTo(adminUrls.products);
             } catch (e) {
                 if (isAxiosError<any>(e)) {

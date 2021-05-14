@@ -44,7 +44,7 @@ export const CategoriesList = () => {
             actions={[{
                 isFreeAction: true,
                 icon: "add",
-                tooltip: "Add Subcategory",
+                tooltip: "Add Category",
                 onClick: () => {
                     routeTo(adminUrls.categoriesAdd);
                 }
