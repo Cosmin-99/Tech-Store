@@ -95,7 +95,9 @@ export const getProductsBySubcategoryId = async (req: Request, res: Response, ne
             WHERE subcategoryid = $1
         `, [id]);
         const subcategory: QueryResult = await pool.query(`
-            SELECT subcategories.name, 
+            SELECT CAST(subcategories.id as INTEGER),
+                   subcategories.imageurl,
+                   subcategories.name, 
                    CAST(subcategories.categoryid as INTEGER) 
                 FROM subcategories WHERE id = $1
         `, [id]);
@@ -108,7 +110,7 @@ export const getProductsBySubcategoryId = async (req: Request, res: Response, ne
                     id: category.rows[0].id,
                     name: category.rows[0].name
                 },
-                subcategoryName: subcategory.rows[0].name,
+                subcategory: subcategory.rows[0],
                 products: products.rows
             }
         )
