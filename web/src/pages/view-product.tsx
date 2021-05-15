@@ -1,5 +1,5 @@
 import { Chip, Divider, Grid, makeStyles, Theme, useMediaQuery } from '@material-ui/core';
-import { useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { TechButton } from '../components/TechButton';
 import { useLoadData } from '../hooks/useLoadData';
@@ -7,10 +7,14 @@ import { Product } from '../models/Product';
 import { urls, useRouting } from '../utils/routing';
 import { ProductDetailsTable } from '../components/ProductDetailsTable';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-// import { Promotion } from '../models/Promotion';
+
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { AddToCartButton } from '../components/AddToCartButton';
 import { LoadingComponent } from '../components/LoadingComponent';
 import { getProductById } from 'services/products.service';
+import { CartContext } from 'contexts/cartContext';
+import { useTitle } from 'hooks/useTitle';
 const useStyles = makeStyles((theme) => ({
     grid: {
         backgroundColor: theme.palette.background.paper,
@@ -53,10 +57,12 @@ const useStyles = makeStyles((theme) => ({
 export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
     const { routeTo } = useRouting();
     const classes = useStyles();
+    const [, setPageTitle] = useTitle("Product View");
 
     const [product, setProduct] = useState<Product>();
     const [details, setDetails] = useState<Record<string, string>>(null!);
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+    const cartHook = useContext(CartContext);
     const { loading } = useLoadData(async () => {
         const req = await getProductById(p.match.params.id)
         const product = req.data;
@@ -64,6 +70,7 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
             routeTo(urls.shop);
             return;
         }
+        setPageTitle(product.name);
         const description = product.description;
         if (description) {
             setDetails(JSON.parse(description));
@@ -72,6 +79,13 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
         }
         setProduct(product);
     }, [p.match.params.id]);
+    const isFavorite = useMemo(() => {
+        if (!product) {
+            return false;
+        }
+        return cartHook.favorite.findIndex(o => o.id === product.id) !== -1;
+    }, [product, cartHook.favorite]);
+
     if (loading || !product) {
         return <LoadingComponent />
     }
@@ -101,12 +115,12 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
                             <div className={classes.categoryText}>
                                 {name}
                             </div>
-                            {/* <div
+                            <div
                                 onClick={() => {
                                     if (isFavorite) {
-                                        cart.removeFavorite(product);
+                                        cartHook.removeFavorite(product);
                                     } else {
-                                        cart.addFavorite(product);
+                                        cartHook.addFavorite(product);
                                     }
                                 }}
                                 style={{
@@ -118,7 +132,7 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
                                     Salveaza <FavoriteBorderIcon fontSize="default" />
                                 </>}
 
-                            </div> */}
+                            </div>
                         </div>
                     </Grid>
                     <Grid item>
@@ -153,7 +167,7 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
                             color="primary"
                             variant="contained"
                             onClick={() => {
-                                // cart.add(product);
+                                cartHook.add(product);
                             }}
                         />
                     </Grid>
@@ -173,20 +187,20 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
                 </div>
                 <div
                     onClick={() => {
-                        // if (isFavorite) {
-                        //     cart.removeFavorite(product);
-                        // } else {
-                        //     cart.addFavorite(product);
-                        // }
+                        if (isFavorite) {
+                            cartHook.removeFavorite(product);
+                        } else {
+                            cartHook.addFavorite(product);
+                        }
                     }}
                     style={{
                         color: "#8d8d8d", fontSize: "20px", display: "flex", justifyContent: "center", float: "right", userSelect: "none", cursor: "pointer", marginRight: "10px",
                     }}>
-                    {/* {isFavorite ? <>
+                    {isFavorite ? <>
                         Salvat <FavoriteIcon color="secondary" />
                     </> : <>
                         Salveaza <FavoriteBorderIcon fontSize="default" />
-                    </>} */}
+                    </>}
 
                 </div>
             </Grid>
@@ -211,7 +225,7 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
                             color="primary"
                             variant="contained"
                             onClick={() => {
-                                // cart.add(product);
+                                cartHook.add(product);
                             }}
                         >
                             <ShoppingCartIcon style={{ color: "white" }} />

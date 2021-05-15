@@ -16,6 +16,7 @@ import { TechMenu } from './TechMenu';
 import { UserContext } from '../contexts/userContext';
 import { clearUserInStorage } from '../utils/utilFunctions';
 import { adminUrls, urls, useRouting } from '../utils/routing';
+import { CartContext } from 'contexts/cartContext';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -109,6 +110,7 @@ export const Header = () => {
     const [open, setOpen] = React.useState(false);
     const [user, setUser] = useContext(UserContext);
     const canAccesDashboard = useMemo(() => user?.role === "admin", [user]);
+    const cartHook = useContext(CartContext);
     const [anchorEl, setAnchorEl] = React.useState<AnchorElement>(null);
     const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);
     const { routeTo } = useRouting();
@@ -181,9 +183,9 @@ export const Header = () => {
                     <IsAuth>
                         <Grid container alignItems="center" className={classes.userGrid}>
                             <Typography variant="caption" className={classes.savedProducts} onClick={() => {
-                                // routeTo(urls.favorite);
+                                routeTo(urls.favorite);
                             }}>
-                                {`Produse Favorite (${5})`}
+                                {`Produse Favorite (${cartHook.favorite.length})`}
                             </Typography>
                             {canAccesDashboard && <TechButton
                                 aria-controls="menu"

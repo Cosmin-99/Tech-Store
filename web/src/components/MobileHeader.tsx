@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography, IconButton, makeStyles, Slide, Dialog, List, ListItem, ListItemText, InputBase, fade, Badge } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
@@ -14,6 +14,7 @@ import { urls, useRouting } from '../utils/routing';
 // import PrintIcon from '@material-ui/icons/Print';
 import { MobileSearchDrawer } from './MobileSearchDrawer';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import { UserContext } from 'contexts/userContext';
 const useStyles = makeStyles((theme) => ({
     dialogContainer: {
         width: "100%",
@@ -117,6 +118,10 @@ export const MobileHeader = () => {
     const [detailsOpen, setDetailsOpen] = React.useState(false);
     const [focus, setFocus] = React.useState(false);
     const [search, setSearch] = React.useState("");
+    const [user] = useContext(UserContext);
+    const handleDetailsOpen = () => {
+        setDetailsOpen(true);
+    }
     const handleDetailsClose = () => {
         setDetailsOpen(false);
     }
@@ -142,7 +147,7 @@ export const MobileHeader = () => {
             <div className={classes.dialogContainer}>
                 <div style={{ flexGrow: 1 }}>
                     <Toolbar style={{ margin: "1em" }}>
-                        <TechButton
+                        {!user && <TechButton
                             autoFocus
                             color="inherit"
                             onClick={() => {
@@ -153,7 +158,17 @@ export const MobileHeader = () => {
                             disableRipple
                             startIcon={<AccountCircle />}>
                             Login
-                             </TechButton>
+                             </TechButton>}
+                        {user && <div style={{ color: "white" }} onClick={handleDetailsOpen}>
+                            <div style={{
+                                marginBottom: "5px",
+                            }}>
+                                {user.email}
+                            </div>
+                            <div>
+                                Profilul meu {'>'}
+                            </div>
+                        </div>}
                         <div style={{ flexGrow: 1 }} />
                         <IconButton size="small" color="inherit" style={{ backgroundColor: "#568EA6", color: "white" }} onClick={handleClose} aria-label="close">
                             <CloseIcon />
@@ -199,18 +214,27 @@ export const MobileHeader = () => {
             <div className={classes.dialogContainer}>
                 <div style={{ flexGrow: 1 }}>
                     <Toolbar style={{ margin: "1em" }}>
-                        <TechButton
-                            autoFocus
-                            color="inherit"
-                            onClick={() => {
-                                handleClose();
-                                routeTo(urls.login);
-                            }}
-                            style={{ color: "white", backgroundColor: "#568EA6", borderRadius: "5px" }}
-                            disableRipple
-                            startIcon={<AccountCircle />}>
-                            Login
-                        </TechButton>
+                        {!user &&
+                            <TechButton
+                                autoFocus
+                                color="inherit"
+                                onClick={() => {
+                                    handleClose();
+                                    routeTo(urls.login);
+                                }}
+                                style={{ color: "white", backgroundColor: "#568EA6", borderRadius: "5px" }}
+                                disableRipple
+                                startIcon={<AccountCircle />}>
+                                Login
+                        </TechButton>}
+                        {user && <div style={{ color: "white" }}>
+                            <div>
+                                {user.firstName} {user.lastName}
+                            </div>
+                            <div>
+                                {user.email}
+                            </div>
+                        </div>}
                         <div style={{ flexGrow: 1 }} />
                         <IconButton size="small" color="inherit" style={{ backgroundColor: "#568EA6", color: "white" }} onClick={handleDetailsClose} aria-label="close">
                             <CloseIcon />
@@ -229,18 +253,21 @@ export const MobileHeader = () => {
                     <ListItem button onClick={() => {
                         setDetailsOpen(false);
                         setOpen(false);
+                        routeTo(urls.comenzi);
                     }}>
                         <ListItemText primary={"Comenzi"} />
                     </ListItem>
                     <ListItem button onClick={() => {
                         setDetailsOpen(false);
                         setOpen(false);
+                        routeTo(urls.favorite);
                     }}>
                         <ListItemText primary={"Favorite"} />
                     </ListItem>
                     <ListItem button onClick={() => {
                         setDetailsOpen(false);
                         setOpen(false);
+                        routeTo(urls.userDetails)
                     }}>
                         <ListItemText primary={"Date Personale"} />
                     </ListItem>

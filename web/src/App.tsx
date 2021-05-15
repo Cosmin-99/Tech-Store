@@ -22,6 +22,8 @@ import { AdminRoute } from './components/AdminRoute';
 import AdminDashboard from "./pages/admin/dashboard"
 import { ViewProducts } from 'pages/view-products';
 import { ViewCart } from 'pages/view-cart';
+import { Checkout } from 'pages/checkout';
+import { FavoriteProduct } from 'pages/view-favorites';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -84,6 +86,16 @@ function App() {
                     exact
                     path={route(urls.userProfile)}
                     component={UserProfile}
+                  />
+                  <PrivateRoute
+                    exact
+                    path={route(urls.favorite)}
+                    component={FavoriteProduct}
+                  />
+                  <PrivateRoute
+                    exact
+                    path={route(urls.checkout)}
+                    component={Checkout}
                   />
                   <PrivateRoute
                     exact

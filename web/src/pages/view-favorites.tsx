@@ -2,8 +2,9 @@ import React, { useContext, } from 'react';
 import { Grid, Theme, useMediaQuery } from '@material-ui/core';
 import { ProductDisplay } from '../components/ProductCard';
 import { CartContext } from 'contexts/cartContext';
+import { useTitle } from 'hooks/useTitle';
 export const FavoriteProduct = () => {
-
+    useTitle("Favorite");
     const cartHook = useContext(CartContext);
 
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));

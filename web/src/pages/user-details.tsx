@@ -10,6 +10,7 @@ import { LoadingComponent } from '../components/LoadingComponent';
 import { CreditCard } from '../models/CreditCard';
 import { UserContext } from '../contexts/userContext';
 import { updateUser } from "services/user.service"
+import { useTitle } from 'hooks/useTitle';
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('sm')]: {
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const UserDetails = () => {
+    useTitle("User Details");
     const classes = useStyles();
     const [user] = useContext(UserContext);
 
@@ -307,7 +309,7 @@ export const UserDetails = () => {
                                             <Grid item xs={2}>
                                                 <Typography>First Name</Typography>
                                             </Grid>
-                                            <Grid item xs={6}>
+                                            <Grid item sm={6} xs={10}>
                                                 <TextField value={values.firstName} id="firstName" variant="outlined" placeholder="First Name" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
@@ -315,7 +317,7 @@ export const UserDetails = () => {
                                             <Grid item xs={2}>
                                                 <Typography>Last Name</Typography>
                                             </Grid>
-                                            <Grid item xs={6}>
+                                            <Grid item sm={6} xs={10}>
                                                 <TextField value={values.lastName} id="lastName" variant="outlined" placeholder="Last Name" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
@@ -323,7 +325,7 @@ export const UserDetails = () => {
                                             <Grid item xs={2}>
                                                 <Typography>Email</Typography>
                                             </Grid>
-                                            <Grid item xs={6}>
+                                            <Grid item sm={6} xs={10}>
                                                 <TextField disabled={true} value={values.email} id="email" variant="outlined" placeholder="Email" type="email" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
