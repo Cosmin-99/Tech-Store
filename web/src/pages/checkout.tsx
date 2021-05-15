@@ -48,7 +48,7 @@ export const Checkout = () => {
     const classes = useStyles();
 
     const steps = ['Shipping address', 'Payment details', 'Review your order'];
-    const [orderId, setOrderId] = useState("");
+    const [orderId,] = useState("");
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState<Address>(null!);
     const [card, setCard] = useState<CreditCard>(null!);

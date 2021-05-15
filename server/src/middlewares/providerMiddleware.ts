@@ -18,8 +18,7 @@ export function providerMiddleWare(req: Request, res: Response, next: NextFuncti
         console.log(err)
         req.user = user as User;
         console.log(user);
-
-        if (user.role === "provider") {
+        if (user.role === "provider" || user.role === "admin" /** an admin should always be able to run this */) {
             next()
         } else {
             return res.sendStatus(401)

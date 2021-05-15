@@ -28,6 +28,9 @@ export const addSubcategory = (subcategory: {
 export const deleteSubcategory = async (id: string | number) => {
     await axios.delete(endpointURL + `/app/subcategory/${id}`, { headers });
 }
+export const deleteCategory = async (id: string | number) => {
+    return axios.delete(endpointURL + `/app/category/${id}`, { headers });
+}
 
 export const addCategory = async (obj: {
     name: string;

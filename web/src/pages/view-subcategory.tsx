@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ViewSubCategory = (props: RouteComponentProps<{ id: string }>) => {
-    useTitle("Subcategories")
+    const [, setPageTitle] = useTitle("Subcategories")
     const classes = useStyles();
     const { routeTo } = useRouting();
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -51,6 +51,7 @@ export const ViewSubCategory = (props: RouteComponentProps<{ id: string }>) => {
         const req = await getSubcategoriesById(id);
         const categories = req.data;
         setTitle(categories.categoryName);
+        setPageTitle(categories.categoryName);
         setCategories(categories.subcategories);
     }, [props.match.params]);
 

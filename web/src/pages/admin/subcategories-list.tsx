@@ -57,8 +57,12 @@ export const SubcategoriesList = () => {
                 onClick: async (_, rowData) => {
                     if (!Array.isArray(rowData)) {
                         if (window.confirm(`Are you sure you want to delete ${rowData.name}?`)) {
-                            await deleteSubcategory(rowData.id);
-                            setRefresh(!refresh);
+                            try {
+                                await deleteSubcategory(rowData.id);
+                                setRefresh(!refresh);
+                            } catch (e) {
+                                console.log(e);
+                            }
                         }
                     }
                 }

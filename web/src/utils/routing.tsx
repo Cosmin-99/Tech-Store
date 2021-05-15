@@ -21,7 +21,8 @@ export const adminUrls = {
     products: () => `/${adminPrefix}/products`,
     productAdd: () => `/${adminPrefix}/products/add`,
     productEdit: (p: { id: number }) => `/${adminPrefix}/products/${p.id}`,
-    users: () => `/${adminPrefix}/users`
+    users: () => `/${adminPrefix}/users`,
+    userAdd: () => `/${adminPrefix}/users/add`,
 }
 
 export const urls = {

@@ -10,6 +10,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import { urls, useRouting } from '../utils/routing';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
+import { useTitle } from 'hooks/useTitle';
 const useStyles = makeStyles((theme) => ({
     mobileFooter: {
         position: "fixed",
@@ -40,8 +41,8 @@ const CustomIconButton = withStyles((theme) => ({
     },
 }))(IconButton);
 export const ViewCart = () => {
+    useTitle("Cart");
     const classes = useStyles();
-
     const { routeTo } = useRouting();
 
     const [openSnackbar, setOpenSnackbar] = React.useState(false);

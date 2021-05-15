@@ -9,11 +9,10 @@ import jwt from "jsonwebtoken";
 export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
 
-        const { firstname, lastname, adresses, cards } = req.body;
+        const { firstname, lastname, adresses, cards, cart } = req.body;
         const email = (req.user as CurrentUser).email;
-        console.log("H1")
-        const updateUserFields: QueryResult = await pool.query('UPDATE Users SET "firstname"=$1, "lastname"=$2,"adresses"=$3,"cards"=$4 WHERE email = $5',
-            [firstname, lastname, adresses, cards, email])
+        const updateUserFields: QueryResult = await pool.query('UPDATE Users SET "firstname"=$1, "lastname"=$2,"adresses"=$3,"cards"=$4, "cart"=$5 WHERE email = $6',
+            [firstname, lastname, adresses, cards, cart, email])
         return res.status(200).json({
             message: "User updated succesfully !!!"
         });
@@ -49,21 +48,21 @@ export const getCurrentSession = async (req: Request, res: Response, next: NextF
     }
 }
 
-export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<Response|void> => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const id: number = parseInt(req.params.id);
-        const response: QueryResult = await pool.query("DELETE FROM users WHERE id = $1",[id]);
+        const response: QueryResult = await pool.query("DELETE FROM users WHERE id = $1", [id]);
 
         return res.status(200).json({
             message: "User removed."
         })
 
-    } catch(err) {
+    } catch (err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }
 
-export const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<Response|void> => {
+export const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const response: QueryResult = await pool.query(`SELECT 
             CAST(users.id as INTEGER),

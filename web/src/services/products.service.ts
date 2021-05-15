@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Category } from 'models/Category';
 import { Product } from 'models/Product';
 import { ProductForm } from 'models/ProductForm';
 import { ProductsList } from 'models/ProductsList';
@@ -22,7 +23,7 @@ export const getProductBySubcategoryId = async (id: string | number) => {
             name: string;
             id: number;
         };
-        subcategoryName: string;
+        subcategory: Category;
         products: Product[]
     }>(endpointURL + `/app/products/${id}`)
 }

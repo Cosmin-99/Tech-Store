@@ -3,18 +3,18 @@ import MaterialTable from "@material-table/core"
 import { useLoadData } from "hooks/useLoadData"
 import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
-import { getCategories } from "services/categories.service";
+import { deleteCategory, getCategories } from "services/categories.service";
 import { Avatar } from "@material-ui/core";
 import { adminUrls, useRouting } from "utils/routing";
 export const CategoriesList = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const { routeTo } = useRouting();
+    const [refresh, setRefresh] = useState(false);
     const { loading } = useLoadData(async () => {
         const req = await getCategories();
         const categories = req.data;
-        console.log(categories);
         setCategories(categories);
-    }, []);
+    }, [refresh]);
 
     if (loading) {
         return <LoadingComponent />
@@ -47,6 +47,21 @@ export const CategoriesList = () => {
                 tooltip: "Add Category",
                 onClick: () => {
                     routeTo(adminUrls.categoriesAdd);
+                }
+            }, {
+                isFreeAction: false,
+                tooltip: "Delete",
+                icon: "delete",
+                onClick: async (_, rowData) => {
+                    if (!Array.isArray(rowData)) {
+                        if (window.confirm(`Are you sure you want to delete ${rowData.name}?`)) {
+                            try {
+                                await deleteCategory(rowData.id);
+                                setRefresh(!refresh);
+                            } catch (e) {
+                            }
+                        }
+                    }
                 }
             }]}
         />

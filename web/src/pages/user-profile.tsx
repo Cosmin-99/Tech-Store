@@ -9,6 +9,7 @@ import { deepPurple } from '@material-ui/core/colors';
 
 import { urls, useRouting } from '../utils/routing';
 import { UserContext } from '../contexts/userContext';
+import { useTitle } from 'hooks/useTitle';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const UserProfile = () => {
+    useTitle("My Profile");
     const { routeTo } = useRouting();
     const classes = useStyles();
     const [user] = useContext(UserContext);

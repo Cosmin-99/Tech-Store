@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const UserDetails = () => {
-    useTitle("User Details");
+    useTitle("My Details");
     const classes = useStyles();
     const [user] = useContext(UserContext);
 

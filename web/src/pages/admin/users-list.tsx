@@ -3,11 +3,11 @@ import { useLoadData } from "hooks/useLoadData";
 import { Avatar } from "@material-ui/core"
 import { ProductsList as IProductList } from "models/ProductsList";
 import { useState } from "react";
-import { deleteProduct, getAllProducts } from "services/products.service";
+import { getAllProducts } from "services/products.service";
 import { adminUrls, useRouting } from "utils/routing";
 import { LoadingComponent } from "components/LoadingComponent"
 
-export const ProductsList = () => {
+export const UsersList = () => {
     const { routeTo } = useRouting();
     const [products, setProducts] = useState<IProductList[]>([]);
     const [refresh, setRefresh] = useState(false);
@@ -21,7 +21,7 @@ export const ProductsList = () => {
 
     return <div className="table-list-pagination-bottom">
         <MaterialTable<IProductList>
-            title="Products"
+            title="Users"
             columns={[
                 {
                     title: "Image", field: "imageurl", render: (rowData) => <Avatar
@@ -46,9 +46,9 @@ export const ProductsList = () => {
             actions={[{
                 isFreeAction: true,
                 icon: "add",
-                tooltip: "Add Product",
+                tooltip: "Add User",
                 onClick: () => {
-                    routeTo(adminUrls.productAdd);
+                    routeTo(adminUrls.userAdd);
                 }
             }, {
                 isFreeAction: false,
@@ -57,12 +57,8 @@ export const ProductsList = () => {
                 onClick: async (_, rowData) => {
                     if (!Array.isArray(rowData)) {
                         if (window.confirm(`Are you sure you want to delete ${rowData.name}?`)) {
-                            try {
-                                await deleteProduct(rowData.id);
-                                setRefresh(!refresh);
-                            } catch (e) {
-                                console.log(e);
-                            }
+                            // await deleteProduct(rowData.id);
+                            setRefresh(!refresh);
                         }
                     }
                 }
