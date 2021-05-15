@@ -5,6 +5,10 @@ import { ApiError } from "../error/ApiError";
 import { HttpStatusCode } from "../error/HttpStatusCodes";
 import { CurrentUser } from "../models/user.model";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import * as yup from 'yup';
+import Mail from "nodemailer/lib/mailer";
+import nodemailer from "nodemailer";
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -78,5 +82,96 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction):
         return res.status(200).json(response.rows);
     } catch (err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));
+    }
+}
+
+export const createUsers = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const schema = yup.object().shape({
+            firstName: yup.string().required("First Name is Required"),
+            lastName: yup.string().required("Last Name is Required"),
+            email: yup.string().email("Invalid Email").required("Email is Required"),
+            password: yup.string().min(3).required("Password is Required"),
+        });
+        const { firstname, lastname, email, role, password } = req.body;
+
+        await schema.validate({
+            firstname, lastname, email, password
+        })
+        // if this passes it means that the schema is valid , otherwise the error will be catched down
+
+        const user: QueryResult = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
+
+        if (!user.rows.length) {
+            const hashedPassword = await bcrypt.hash(password, 12);
+
+            const user = await pool.query(`
+        INSERT INTO Users ("firstname", "lastname", "email", "role", "password") VALUES ($1, $2, $3, $4, $5)
+        `,
+                [
+                    firstname,
+                    lastname,
+                    email,
+                    role,
+                    hashedPassword
+                ]);
+
+            const resetPasswordRequest = await pool.query(` 
+    INSERT INTO ResetPassword ("firstname", "lastname", "email") VALUES ($1, $2, $3)
+    `,
+                [
+                    firstname,
+                    lastname,
+                    email
+                ]);
+
+            const token = jwt.sign({
+                firstName: firstname,
+                lastName: lastname,
+                email: email,
+                role: role
+            },
+                process.env.TOKEN_ENCRYPTION as string,
+            );
+
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASSWORD
+                },
+                debug: false,
+                logger: true
+            })
+
+            //send email with defined transport object
+            const info: Promise<Mail> = await transporter.sendMail({
+                from: '"Tech Store support team" <support@techstore.com>',
+                to: email,
+                subject: "Reset Password",
+                text: "Click the follow link to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!",
+                html: "<p>Click the follow link to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!</p>"
+            })
+
+            return res.status(200).json({
+                firstName: firstname,
+                lastName: lastname,
+                email: email,
+                role: role,
+                token
+            })
+        } else if (user.rows[0].email === email) {
+            next(new ApiError(HttpStatusCode.BadRequest, "Email already exists"));
+        } else {
+            next(new ApiError(HttpStatusCode.InternalServerError, "Something went wrong when you try to register. Please try again"));
+        }
+
+    } catch (err) {
+        console.log(err);
+        if (err instanceof yup.ValidationError) {
+            next(err.errors[0]);
+        } else {
+            next(err);
+        }
     }
 }
