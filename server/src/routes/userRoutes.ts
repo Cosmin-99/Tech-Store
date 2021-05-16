@@ -8,5 +8,5 @@ export const userRoutes: Router = Router();
 userRoutes.post("/update-user", tokenMiddleWare, updateUser);
 userRoutes.get("/current-session", tokenMiddleWare, getCurrentSession);
 userRoutes.delete("/remove-user/:id",adminMiddleWare, deleteUser);
-userRoutes.get("/all", adminMiddleWare,getUsers);
+userRoutes.get("/all-users", adminMiddleWare,getUsers);
 userRoutes.post("/create-user", adminMiddleWare, createUsers);

@@ -24,6 +24,7 @@ import { ViewProducts } from 'pages/view-products';
 import { ViewCart } from 'pages/view-cart';
 import { Checkout } from 'pages/checkout';
 import { FavoriteProduct } from 'pages/view-favorites';
+import { UserOrders } from 'pages/orders';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -101,6 +102,11 @@ function App() {
                     exact
                     path={route(urls.userDetails)}
                     component={UserDetails}
+                  />
+                  <PrivateRoute
+                    exact
+                    path={route(urls.comenzi)}
+                    component={UserOrders}
                   />
                   <Route
                     path={route(urls.notFound)}

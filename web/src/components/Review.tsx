@@ -32,8 +32,8 @@ export const Review = (p: {
         { name: 'Expiry date', detail: card.expDate },
     ];
     const classes = useStyles();
-    const cart = useContext(CartContext);
-    const products = cart.cart;//.map(cart => ({name:cart.name,}))
+    const cartHook = useContext(CartContext);
+    const products = cartHook.cart;//.map(cart => ({name:cart.name,}))
     return (
         <React.Fragment>
             <Typography variant="h6" gutterBottom>

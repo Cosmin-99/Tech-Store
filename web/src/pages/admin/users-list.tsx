@@ -1,45 +1,34 @@
 import MaterialTable from "@material-table/core"
 import { useLoadData } from "hooks/useLoadData";
-import { Avatar } from "@material-ui/core"
-import { ProductsList as IProductList } from "models/ProductsList";
 import { useState } from "react";
-import { getAllProducts } from "services/products.service";
 import { adminUrls, useRouting } from "utils/routing";
 import { LoadingComponent } from "components/LoadingComponent"
+import { deleteUser, getAllUsers } from "services/user.service";
+import { User } from "models/User";
 
 export const UsersList = () => {
     const { routeTo } = useRouting();
-    const [products, setProducts] = useState<IProductList[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [refresh, setRefresh] = useState(false);
     const { loading } = useLoadData(async () => {
-        const z = await getAllProducts();
-        setProducts(z.data);
+        const userReq = await getAllUsers();
+        setUsers(userReq.data);
     }, [refresh]);
     if (loading) {
         return <LoadingComponent />
     }
 
     return <div className="table-list-pagination-bottom">
-        <MaterialTable<IProductList>
+        <MaterialTable<User>
             title="Users"
             columns={[
-                {
-                    title: "Image", field: "imageurl", render: (rowData) => <Avatar
-                        variant="rounded"
-                        style={{
-                            width: "100px",
-                            height: "100px"
-                        }}
-                        src={rowData.imageurl}
-                    />
-                },
                 { title: "ID", field: "id" },
-                { title: "Name", field: "name" },
-                { title: "Price", field: "price", },
-                { title: "Discount", field: "discount" },
-                { title: "Subcategory", field: "subcategoryname" }
+                { title: "First Name", field: "firstname" },
+                { title: "Last Name", field: "lastname", },
+                { title: "email", field: "email" },
+                { title: "role", field: "role" }
             ]}
-            data={products}
+            data={users}
             options={{
                 search: true
             }}
@@ -56,8 +45,8 @@ export const UsersList = () => {
                 icon: "delete",
                 onClick: async (_, rowData) => {
                     if (!Array.isArray(rowData)) {
-                        if (window.confirm(`Are you sure you want to delete ${rowData.name}?`)) {
-                            // await deleteProduct(rowData.id);
+                        if (window.confirm(`Are you sure you want to delete row with email ${rowData.email}?`)) {
+                            await deleteUser(rowData.id);
                             setRefresh(!refresh);
                         }
                     }

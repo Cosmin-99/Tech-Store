@@ -15,6 +15,7 @@ import multer from "multer";
 import { apiErrorHandler } from './error/apiErrorHandler';
 import { userRoutes } from './routes/userRoutes';
 import { initDatabase } from './database/database';
+import { orderRoutes } from './routes/orderRoutes';
 
 dotenv.config();
 initDatabase({
@@ -46,6 +47,7 @@ passportConfig();
 app.use('/api/auth/', authRouter);
 app.use('/api/app/', appRoutes);
 app.use('/api/app/user', userRoutes);
+app.use('/api/order/', orderRoutes);
 
 //this should be among the last of the routes cuz of the next() function
 app.use(apiErrorHandler)

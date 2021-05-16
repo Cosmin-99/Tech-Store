@@ -202,3 +202,12 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }
+export const getProductsByIdArray = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { ids } = req.body;
+        console.log(ids);
+        return res.status(200);
+    } catch (err) {
+        next(err);
+    }
+}

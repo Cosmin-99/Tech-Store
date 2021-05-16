@@ -14,6 +14,7 @@ import { ProductForm } from "./product-form";
 import { ProductsList } from "./products-list";
 import { SubcategoriesForm } from "./subcategories-form";
 import { SubcategoriesList } from "./subcategories-list";
+import { UserForm } from "./users-form";
 import { UsersList } from "./users-list";
 
 
@@ -104,6 +105,11 @@ const Dashboard = () => {
                         exact
                         path={route(adminUrls.users)}
                         component={UsersList}
+                    />
+                    <Route
+                        exact
+                        path={route(adminUrls.userAdd)}
+                        component={UserForm}
                     />
                     <Route
                         exact

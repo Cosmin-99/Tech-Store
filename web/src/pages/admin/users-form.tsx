@@ -1,46 +1,35 @@
 import { Card as MuiCard, CardContent, Grid, TextField, Typography } from "@material-ui/core";
 import { Formik, Form } from "formik"
-import { DropzoneArea, } from "material-ui-dropzone";
 import { spacing } from "@material-ui/system";
 import styled from "styled-components";
 import * as Yup from "yup";
 import { SingleSelectAutocomplete } from "components/SingleSelectAutocomplete";
 import { TechButton } from "components/TechButton";
-import { useState } from "react";
-import { useLoadData } from "hooks/useLoadData";
-import { addSubcategory, getCategories } from "services/categories.service";
-import { Category } from "models/Category";
-import { LoadingComponent } from "components/LoadingComponent";
+import { useMemo, useState } from "react";
 import { isAxiosError } from "utils/utilFunctions";
 import { adminUrls, useRouting } from "utils/routing";
+import { addUser } from "services/user.service";
+import { User } from "models/User";
 const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Required"),
-    categoryid: Yup.number().required("Required"),
-    category: Yup.object().required("Required").typeError("Required")
+    firstName: Yup.string().required("First Name is Required"),
+    lastName: Yup.string().required("Last Name is Required"),
+    email: Yup.string().email("Invalid Email").required("Email is Required"),
 });
 
 const Card = styled(MuiCard)(spacing);
 
 const initialValues = {
-    name: "",
-    category: null as Category | null,
-    categoryid: 0,
-    file: null as File | null
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "user" as User["role"],
 }
 export const UserForm = () => {
-    const [subcategories, setSubcategories] = useState<Category[]>([]);
     const [error, setError] = useState("");
     const {
         routeTo
     } = useRouting();
-    const { loading } = useLoadData(async () => {
-        const req = await getCategories();
-        setSubcategories(req.data);
-    }, []);
-
-    if (loading) {
-        return <LoadingComponent />;
-    }
+    const roles = useMemo(() => ["user", "admin", "provider"], []);
     return <Formik
         initialValues={initialValues}
         validateOnMount={true}
@@ -48,8 +37,8 @@ export const UserForm = () => {
         onSubmit={async (values) => {
             try {
                 console.log(values);
-                await addSubcategory(values);
-                routeTo(adminUrls.subCategories);
+                await addUser(values);
+                routeTo(adminUrls.users);
             } catch (e) {
                 if (isAxiosError<any>(e)) {
                     const message = e.response!.data.message
@@ -73,69 +62,86 @@ export const UserForm = () => {
                     <CardContent>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
+                                <Typography color="textSecondary" variant="caption" gutterBottom>
+                                    *password will be generated on server
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <Typography variant="h1">
                                     {error}
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} >
+                            <Grid item sm={6} xs={12}>
                                 <TextField
                                     variant="outlined"
-                                    label="Name"
-                                    id="name"
+                                    label="First Name"
+                                    id="firstName"
                                     required
                                     fullWidth
-                                    value={values.name}
-                                    error={Boolean(touched.name && errors.name)}
-                                    helperText={touched.name && errors.name}
+                                    value={values.firstName}
+                                    error={Boolean(touched.firstName && errors.firstName)}
+                                    helperText={touched.firstName && errors.firstName}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <SingleSelectAutocomplete
-                                    renderOption={opt => opt?.name ?? ""}
-                                    value={values.category}
-                                    InputProps={{
-                                        label: "Category",
-                                        variant: "outlined",
-                                        error: Boolean(errors.category),
-                                        helperText: errors.category,
-                                    }}
+                            <Grid item sm={6} xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    label="Last Name"
+                                    id="lastName"
                                     required
-                                    options={subcategories}
-                                    onChange={value => {
-                                        setValues({
-                                            ...values,
-                                            category: value,
-                                            categoryid: value ? value.id : 0,
-                                        });
-                                    }}
+                                    fullWidth
+                                    value={values.lastName}
+                                    error={Boolean(touched.lastName && errors.lastName)}
+                                    helperText={touched.lastName && errors.lastName}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
                                 />
                             </Grid>
+                            <Grid item sm={6} xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    label="Email"
+                                    id="email"
+                                    required
+                                    fullWidth
+                                    value={values.email}
+                                    error={Boolean(touched.email && errors.email)}
+                                    helperText={touched.email && errors.email}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                            </Grid>
+                            <Grid item sm={6} xs={12}>
+                                <SingleSelectAutocomplete
+                                    renderOption={opt => opt}
+                                    value={values.role}
+                                    AutoCompleteProps={{
+                                        disableClearable: true
+                                    }}
+                                    InputProps={{
+                                        label: "Subcategory",
+                                        variant: "outlined",
+                                        error: Boolean(errors.role),
+                                        helperText: errors.role,
+                                    }}
+                                    required
+                                    options={roles}
+                                    onChange={value => {
+                                        console.log(value);
+                                        if (value) {
+                                            setValues({
+                                                ...values,
+                                                role: value as any,
+                                            });
+                                        }
+                                    }} />
+                            </Grid>
                             <Grid item xs={12}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6" gutterBottom>
-                                            Upload Picture
-                                </Typography>
-                                        <DropzoneArea
+                            </Grid>
+                            <Grid item xs={12}>
 
-                                            acceptedFiles={['image/*']}
-                                            dropzoneText={"Drag and drop an image here or click"}
-                                            showFileNamesInPreview={true}
-                                            showFileNames={true}
-                                            filesLimit={1}
-                                            showPreviewsInDropzone={true}
-                                            onChange={e => {
-                                                setValues({
-                                                    ...values,
-                                                    file: e[0],
-                                                })
-                                            }}
-                                        />
-                                    </CardContent>
-
-                                </Card>
                             </Grid>
                             <Grid item xs={12}>
                                 <TechButton

@@ -11,7 +11,7 @@ export function SingleSelectAutocomplete<
     initalValue?: T;
     options: T[];
     value?: T;
-    AutoCompleteProps?: AutocompleteProps<T, false, DisableClearable, FreeSolo>,
+    AutoCompleteProps?: Omit<AutocompleteProps<T, false, DisableClearable, FreeSolo>, "options" | "renderInput">,
     InputProps?: TextFieldProps,
     required?: boolean;
     renderOption: (option: T) => string;
@@ -70,7 +70,7 @@ export function SingleSelectAutocomplete<
                     {...params}
                     {...InputProps}
                     fullWidth
-                    
+
                     required={required ?? false}
                     autoComplete="off"
                     InputProps={{

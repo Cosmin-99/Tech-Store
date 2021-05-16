@@ -7,6 +7,7 @@ import { Address } from '../models/Address';
 import { CreditCard } from '../models/CreditCard';
 import { CartContext } from 'contexts/cartContext';
 import { LoadingComponent } from '../components/LoadingComponent';
+import { createOrder } from 'services/orders.service';
 const useStyles = makeStyles((theme) => ({
     appBar: {
         position: 'relative',
@@ -48,11 +49,11 @@ export const Checkout = () => {
     const classes = useStyles();
 
     const steps = ['Shipping address', 'Payment details', 'Review your order'];
-    const [orderId,] = useState("");
+    const [orderId, setOrderId] = useState("");
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState<Address>(null!);
     const [card, setCard] = useState<CreditCard>(null!);
-    const cart = useContext(CartContext);
+    const cartHook = useContext(CartContext);
     function getStepContent(step: number) {
         switch (step) {
             case 0:
@@ -81,20 +82,17 @@ export const Checkout = () => {
             if (activeStep === steps.length - 1) {
                 setLoading(true);
                 const order = {
-                    card,
-                    address,
-                    items: cart.cart,
-                    date: new Date().toISOString(),
+                    address: JSON.stringify(address),
+                    subtotal: Math.round(cartHook.cart.reduce((sum, curr) => sum + curr.price * curr.count, 0) * 100) / 100,
+                    products: JSON.stringify(cartHook.cart),
+                    card: JSON.stringify(card),
+                    date_of_placement: new Date().toISOString(),
                 }
                 console.log(order);
-                // db.collection("comenzi");
-                // const res = await db.collection("comenzi").add(order);
-                // await addOrder(res.id);
-                // await db.collection("comenzi").doc(res.id).set({
-                //     ...order, id: res.id
-                // })
-                cart.emptyCart();
-                // setOrderId(res.id);
+                const req = await createOrder(order);
+                const id = req.data.id;
+                setOrderId(id);
+                cartHook.emptyCart();
                 setLoading(false);
             }
         }
