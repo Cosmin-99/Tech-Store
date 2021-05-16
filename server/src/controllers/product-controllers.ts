@@ -202,6 +202,7 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }
+
 export const getProductsByIdArray = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { ids } = req.body;
@@ -209,5 +210,26 @@ export const getProductsByIdArray = async (req: Request, res: Response, next: Ne
         return res.status(200);
     } catch (err) {
         next(err);
+    }
+}
+
+export const searchProductsByName = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { searchString } = req.body;
+        
+        const result: QueryResult = await pool.query(`
+        SELECT CAST(products.id as INTEGER),
+        products.name,
+        CAST(products.price as INTEGER),
+        CAST(products.discount as INTEGER),
+        products.imageurl,
+        CAST(products.subcategoryid as INTEGER),
+        products.description
+    FROM products WHERE name ILIKE '${searchString}%' LIMIT 8
+        `)
+
+        return res.status(200).json(result.rows);
+    } catch (err) {
+        next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }

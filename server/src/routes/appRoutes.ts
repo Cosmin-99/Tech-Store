@@ -2,7 +2,7 @@ import { Router } from "express";
 import multer, { Multer, StorageEngine } from "multer";
 import { providerRegister } from "../controllers/addProviders";
 import { addCategory, deleteCategory, getCategories, getCategoryById, updateCatergory } from "../controllers/appControllers";
-import { addProduct, deleteProduct, getProductById, getProducts, getProductsBySubcategoryId, updateProduct } from "../controllers/product-controllers";
+import { addProduct, deleteProduct, getProductById, getProducts, getProductsBySubcategoryId, searchProductsByName, updateProduct } from "../controllers/product-controllers";
 import { sendEmailProviders } from "../controllers/sendEmailController";
 import { addSubcategory, deleteSubcategory, getSubcategories, getSubcategoryByCategoryId, updateSubcategory } from "../controllers/subcategories-controllers";
 import { adminMiddleWare } from "../middlewares/adminMiddleware";
@@ -35,6 +35,7 @@ appRoutes.put("/products/:id", singleFileUpload.single('image'), updateProduct);
 appRoutes.delete("/products/:id", deleteProduct);
 appRoutes.get("/all-products", tokenMiddleWare, getProducts);
 appRoutes.get("/product/:id", getProductById);
+appRoutes.get("/search",searchProductsByName);
 
 //provider
 appRoutes.post("/provider", sendEmailProviders);
