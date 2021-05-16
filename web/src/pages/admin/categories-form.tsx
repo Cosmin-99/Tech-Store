@@ -27,7 +27,6 @@ export const CategoriesForm = (p: RouteComponentProps<{ id: string }>) => {
     useLoadData(async () => {
         if (p.match.params.id) {
             const req = await getCategoryById(p.match.params.id);
-            console.log(req.data);
             setInitialValues(req.data as any);
         } else {
             setInitialValues({
@@ -48,7 +47,6 @@ export const CategoriesForm = (p: RouteComponentProps<{ id: string }>) => {
         validationSchema={validationSchema}
         onSubmit={async (values) => {
             try {
-                console.log(values);
                 if (p.match.params.id) {
                     const { file, name, } = values;
                     let submitValues = file ? {

@@ -36,7 +36,6 @@ export const UserForm = () => {
         validationSchema={validationSchema}
         onSubmit={async (values) => {
             try {
-                console.log(values);
                 await addUser(values);
                 routeTo(adminUrls.users);
             } catch (e) {
@@ -129,7 +128,6 @@ export const UserForm = () => {
                                     required
                                     options={roles}
                                     onChange={value => {
-                                        console.log(value);
                                         if (value) {
                                             setValues({
                                                 ...values,

@@ -67,7 +67,6 @@ export const ViewProducts = (props: RouteComponentProps<{ subCategory: string }>
             return;
         }
         const req = await getProductBySubcategoryId(subCategory);
-        console.log(req.data);
         setParentCategory(req.data.category);
         setTitle(req.data.subcategory.name);
         setProducts(req.data.products);

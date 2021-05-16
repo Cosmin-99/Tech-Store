@@ -20,7 +20,6 @@ export const UserContextProvider: FC = props => {
                 const unparsedUser = localStorage.getItem(userLocalStorageKey);
                 if (unparsedUser) {
                     const parsedUser = JSON.parse(unparsedUser);
-                    console.log(parsedUser);
                     headers.Authorization = `Bearer ${parsedUser.token}`;
                     const token = await verifyToken();
                     if (token.data.passed) {

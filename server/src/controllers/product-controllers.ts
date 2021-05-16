@@ -238,7 +238,7 @@ export const searchProductsByName = async (req: Request, res: Response, next: Ne
         products.imageurl,
         CAST(products.subcategoryid as INTEGER),
         products.description
-    FROM products WHERE name ILIKE '${searchString}%' LIMIT 8
+    FROM products WHERE name ILIKE '%${searchString}%' LIMIT 8
         `)
 
         return res.status(200).json(result.rows);

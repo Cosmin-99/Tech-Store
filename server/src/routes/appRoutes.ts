@@ -35,7 +35,7 @@ appRoutes.put("/products/:id", singleFileUpload.single('image'), updateProduct);
 appRoutes.delete("/products/:id", deleteProduct);
 appRoutes.get("/all-products", tokenMiddleWare, getProducts);
 appRoutes.get("/product/:id", getProductById);
-appRoutes.get("/search",searchProductsByName);
+appRoutes.post("/search",searchProductsByName);
 appRoutes.get("/products-list", getProductsByIdArray);
 
 //provider

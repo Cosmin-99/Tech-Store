@@ -80,7 +80,7 @@ export const ProductForm = (p: RouteComponentProps<{ id: string }>) => {
                     .stringify(values
                         .description
                         .reduce((acc, current) => ({ ...acc, [current[0]]: current[1] }), {}));
-                console.log(stringifedDetails);
+                
 
                 const id = p.match.params.id;
                 if (id) {

@@ -47,7 +47,6 @@ export const SubcategoriesForm = () => {
         validationSchema={validationSchema}
         onSubmit={async (values) => {
             try {
-                console.log(values);
                 await addSubcategory(values);
                 routeTo(adminUrls.subCategories);
             } catch (e) {

@@ -61,7 +61,6 @@ export const ViewSubCategory = (props: RouteComponentProps<{ id: string }>) => {
     }) => {
         const { category } = p;
         return <div className={classes.categoryDisplay} onClick={() => {
-            console.log(category.id);
             routeTo(urls.products, { subCategory: category.id.toString() });
         }}>
             <Card >

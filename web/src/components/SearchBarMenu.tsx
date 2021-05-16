@@ -1,11 +1,14 @@
-import { AppBar, Toolbar, Typography, InputBase, makeStyles, fade, Badge } from "@material-ui/core";
-import React, { useContext, useState } from "react"
+import { AppBar, Toolbar, Typography, InputBase, makeStyles, fade, Badge, CircularProgress } from "@material-ui/core";
+import React, { useContext, useRef, useState } from "react"
 import { TechButton } from "./TechButton";
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { urls, useRouting } from "../utils/routing";
 import Autocomplete from "@material-ui/lab/Autocomplete/Autocomplete";
 import { CartContext } from "contexts/cartContext";
+import { searchProducts } from "services/categories.service";
+import { useLoadData } from "hooks/useLoadData";
+import { Product } from "models/Product";
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -95,8 +98,16 @@ export const SearchBarMenu = () => {
     const classes = useStyles();
     const { routeTo } = useRouting();
     const cartHook = useContext(CartContext);
-    const [products,] = useState<any[]>([]);
+    const [search, setSearch] = useState("");
+    const [products, setProducts] = useState<Product[]>([]);
+    const timeout = useRef<any>(null!);
 
+    const { loading } = useLoadData(async () => {
+        const req = await searchProducts({
+            searchString: search
+        });
+        setProducts(req.data);
+    }, [search]);
     return <div>
         <AppBar position="static" className={classes.appBar}>
             <Toolbar>
@@ -113,19 +124,26 @@ export const SearchBarMenu = () => {
                         autoHighlight
                         onChange={(e, value) => {
                             if (value) {
+                                setSearch("");
+                                routeTo(urls.product, { id: value.id })
                                 //maybe some routing here
                             }
                         }}
+
+                        onInputChange={(_, value, reason) => {
+                            if (timeout.current) {
+                                clearTimeout(timeout.current);
+                            }
+                            timeout.current = setTimeout(() => {
+                                timeout.current = null!;
+                                if (reason === "input")
+                                    setSearch(value);
+                            }, 500);
+                        }}
                         noOptionsText="Nu s-a gasit nici un rezultat pentru textul cautat"
                         getOptionLabel={(option) => option.name}
-                        filterOptions={(option, state) => {
-                            const input = state.inputValue;
-                            if (!input) {
-                                return [];
-                            }
-                            const keys = input.toLocaleLowerCase().split(" ");
-                            return option.filter(product => keys.reduce((r, key) => r && product.name.toLocaleLowerCase().includes(key), true as boolean));
-                        }}
+                        getOptionSelected={(e, v) => e.id === v.id}
+                        loading={loading}
                         renderOption={(option) => (
                             <React.Fragment>
                                 {option.name}
@@ -144,6 +162,12 @@ export const SearchBarMenu = () => {
                                         root: classes.inputRoot,
                                         input: classes.inputInput,
                                     }}
+                                    endAdornment={(
+                                        <React.Fragment>
+                                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                            {params.InputProps.endAdornment}
+                                        </React.Fragment>
+                                    )}
                                 />
                             </>
                         )}

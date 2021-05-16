@@ -88,7 +88,6 @@ export const Checkout = () => {
                     card: JSON.stringify(card),
                     date_of_placement: new Date().toISOString(),
                 }
-                console.log(order);
                 const req = await createOrder(order);
                 const id = req.data.id;
                 setOrderId(id);

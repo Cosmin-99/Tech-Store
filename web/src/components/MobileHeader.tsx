@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography, IconButton, makeStyles, Slide, Dialog, List, ListItem, ListItemText, InputBase, fade, Badge } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
@@ -136,6 +136,10 @@ export const MobileHeader = () => {
             document.querySelector("body")!.style.overflow = "scroll";
         }
     }, [focus]);
+
+
+    const timeout = useRef<any>(null!);
+
     const focusInput = () => {
         setFocus(!focus);
     }
@@ -182,32 +186,6 @@ export const MobileHeader = () => {
                 }}>
                     SHOP
                  </div>
-                {/* <List component="nav" className={classes.whiteText}>
-                    <ListItem button>
-                        <ListItemIcon className={classes.whiteText}>
-                            <LaptopChromebookIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Cauta laptop"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon className={classes.whiteText}>
-                            <CardGiftcardIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Card cadou"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon className={classes.whiteText}>
-                            <BuildIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Asamblor PC"} />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon className={classes.whiteText}>
-                            <PrintIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Cauta consumabile"} />
-                    </ListItem>
-                </List> */}
             </div>
         </Dialog>
         <Dialog fullScreen open={detailsOpen} onClose={handleDetailsClose} TransitionComponent={TransitionDetails}>
@@ -290,7 +268,15 @@ export const MobileHeader = () => {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                            onChange={e => setSearch(e.target.value)}
+                            onChange={e => {
+                                if (timeout.current) {
+                                    clearTimeout(timeout.current);
+                                }
+                                timeout.current = setTimeout(() => {
+                                    timeout.current = null!;
+                                    setSearch(e.target.value);
+                                }, 500);
+                            }}
                         />
                     </>}
                 </div>

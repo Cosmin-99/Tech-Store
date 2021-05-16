@@ -100,7 +100,6 @@ export const UserDetails = () => {
                     initialValues={modifyCard}
                     onAdd={async card => {
                         // await addCard(card);
-                        console.log(cards);
                         const submitObject = {
                             firstname: user!.firstName,
                             lastname: user!.lastName,
@@ -150,7 +149,6 @@ export const UserDetails = () => {
                     }}
                     onAdd={async addr => {
                         // await addAddress(addr);
-                        console.log(addr);
                         const submitObject = {
                             firstname: user!.firstName,
                             lastname: user!.lastName,

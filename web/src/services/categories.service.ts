@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios"
+import { Product } from "models/Product";
 import { generateFormData } from "utils/utilFunctions";
 import { Category } from "../models/Category";
 import { endpointURL, headers } from "./config"
@@ -50,4 +51,9 @@ export const updateCategory = async (data: {
 }
 export const getCategoryById = async (id: string | number) => {
     return axios.get<Category>(`${endpointURL}/app/category/${id}`);
+}
+export const searchProducts = async (data: {
+    searchString: string;
+}) => {
+    return axios.post<Product[]>(`${endpointURL}/app/search`, data, { headers });
 }

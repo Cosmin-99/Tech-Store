@@ -1,6 +1,9 @@
 import { makeStyles } from '@material-ui/core';
-import  { useMemo, useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
+import { searchProducts } from 'services/categories.service';
+import { useLoadData } from 'hooks/useLoadData';
+import { urls, useRouting } from 'utils/routing';
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         zIndex: 1,
@@ -45,28 +48,30 @@ export const MobileSearchDrawer = (p: {
 }) => {
     const { open, searchText, onClickProduct } = p;
 
-    // const { routeTo } = useRouting();
-    const [products,] = useState<any[]>([]);
-    const value = useMemo(() => {
+    const [products, setProducts] = useState<any[]>([]);
+    const { routeTo } = useRouting();
+    useLoadData(async () => {
         if (!searchText) {
-            return [];
+            return;
         }
-        const keys = searchText.toLocaleLowerCase().split(" ");
-        return products.filter(product => keys.reduce((r, key) => r && product.name.toLocaleLowerCase().includes(key), true as boolean));
-    }, [products, searchText]);
+        const req = await searchProducts({
+            searchString: searchText
+        });
+        setProducts(req.data);
+    }, [searchText]);
     const classes = useStyles();
     return <div className={clsx(classes.drawerPaper, !open && classes.drawerPaperClose, open && classes.openPaper)}>
         <div style={{ display: "flex", flexDirection: "column", padding: "2rem 2rem 8rem", }}>
-            {value.map((product, i) => <div key={i} className={classes.product} onClick={() => {
-                // routeTo(urls.viewProduct, { product: product.id });
+            {products.map((product, i) => <div key={i} className={classes.product} onClick={() => {
+                routeTo(urls.product, { id: product.id });
                 onClickProduct();
             }}>
                 {product.name}
             </div>)}
-            {value.length === 0 && !searchText && <div className={classes.product}>
+            {products.length === 0 && !searchText && <div className={classes.product}>
                 Type in for a product
             </div>}
-            {value.length === 0 && searchText && <div className={classes.product}>
+            {products.length === 0 && searchText && <div className={classes.product}>
                 No products found for what you have typed
             </div>}
         </div>
