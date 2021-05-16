@@ -63,6 +63,15 @@ export const CategoriesList = () => {
                         }
                     }
                 }
+            }, {
+                isFreeAction: false,
+                tooltip: "Edit",
+                icon: "edit",
+                onClick: async (_, rowData) => {
+                    if (!Array.isArray(rowData)) {
+                        routeTo(adminUrls.categoriesEdit, { id: rowData.id.toString() });
+                    }
+                }
             }]}
         />
     </div>

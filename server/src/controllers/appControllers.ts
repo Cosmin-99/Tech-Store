@@ -111,7 +111,7 @@ export const getCategoryById = async (req: Request, res: Response, next: NextFun
         const id: number = parseInt(req.params.id)
         const response: QueryResult = await pool.query("SELECT CAST(categories.id as INTEGER), categories.name, categories.imageurl FROM categories WHERE id = $1",[id]);
 
-        return res.status(200).json(response.rows)
+        return res.status(200).json(response.rows[0])
     } catch(err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }

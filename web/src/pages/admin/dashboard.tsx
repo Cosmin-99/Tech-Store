@@ -126,6 +126,10 @@ const Dashboard = () => {
                         path={route(adminUrls.categoriesAdd)}
                         component={CategoriesForm}
                     />
+                    <Route
+                        path={route(adminUrls.categoriesEdit, ["id"])}
+                        component={CategoriesForm}
+                    />
                 </Switch>
             </Container>
         </Grid>

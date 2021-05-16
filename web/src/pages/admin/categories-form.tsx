@@ -6,25 +6,42 @@ import styled from "styled-components";
 import * as Yup from "yup";
 import { TechButton } from "components/TechButton";
 import { useState } from "react";
-import { addCategory } from "services/categories.service";
+import { addCategory, getCategoryById, updateCategory } from "services/categories.service";
 import { isAxiosError } from "utils/utilFunctions";
 import { adminUrls, useRouting } from "utils/routing";
+import { RouteComponentProps } from "react-router-dom";
+import { useLoadData } from "hooks/useLoadData";
+import { LoadingComponent } from "components/LoadingComponent";
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
 });
 
 const Card = styled(MuiCard)(spacing);
 
-const initialValues = {
-    name: "",
-    file: null as File | null
-}
-export const CategoriesForm = () => {
+export const CategoriesForm = (p: RouteComponentProps<{ id: string }>) => {
     const [error, setError] = useState("");
+    const [initialValues, setInitialValues] = useState<{
+        name: string;
+        file: File | null;
+    }>();
+    useLoadData(async () => {
+        if (p.match.params.id) {
+            const req = await getCategoryById(p.match.params.id);
+            console.log(req.data);
+            setInitialValues(req.data as any);
+        } else {
+            setInitialValues({
+                name: "",
+                file: null as File | null
+            })
+        }
+    })
     const {
         routeTo
     } = useRouting();
-
+    if (!initialValues) {
+        return <LoadingComponent />;
+    }
     return <Formik
         initialValues={initialValues}
         validateOnMount={true}
@@ -32,7 +49,16 @@ export const CategoriesForm = () => {
         onSubmit={async (values) => {
             try {
                 console.log(values);
-                await addCategory(values);
+                if (p.match.params.id) {
+                    const { file, name, } = values;
+                    let submitValues = file ? {
+                        name,
+                        file
+                    } : { name };
+                    await updateCategory(submitValues, p.match.params.id);
+                } else {
+                    await addCategory(values);
+                }
                 routeTo(adminUrls.categories);
             } catch (e) {
                 if (isAxiosError<any>(e)) {
