@@ -59,7 +59,18 @@ export const getOrders = async (req: Request, res: Response, next: NextFunction)
         next(new ApiError(HttpStatusCode.BadRequest, err))
     }
 }
+export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = parseInt(req.params.id);
+        const order = await pool.query(`
+            SELECT * from orders where id = $1
+        `, [id])
 
+        return res.status(200).json(order.rows[0]);
+    } catch (e) {
+        next(e);
+    }
+}
 export const getOrdersByOwnerId = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         // const id: number = parseInt(req.params.id);

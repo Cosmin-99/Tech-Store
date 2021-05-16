@@ -35,6 +35,7 @@ export const urls = {
     checkout: () => "/checkout",
     favorite: () => "/user/favorite",
     comenzi: () => "/user/comenzi",
+    orderDetails: (p: { id: string | number }) => `/user/comenzi/${p.id}`,
     userDetails: () => "/user/details",
 
 
