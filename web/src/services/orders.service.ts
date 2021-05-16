@@ -1,6 +1,4 @@
-import axios, { AxiosResponse } from "axios"
-import { generateFormData } from "utils/utilFunctions";
-import { Category } from "../models/Category";
+import axios from "axios"
 import { endpointURL, headers } from "./config"
 
 export const createOrder = (data: any) => {
