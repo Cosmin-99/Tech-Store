@@ -5,6 +5,7 @@ import azureStorage, { BlobService } from 'azure-storage'
 import getStream from 'into-stream'
 import { ApiError } from '../error/ApiError';
 import { HttpStatusCode } from '../error/HttpStatusCodes';
+import { parse } from 'dotenv/types';
 
 interface MulterRequest extends Request {
     file: any;
@@ -206,8 +207,20 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 export const getProductsByIdArray = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { ids } = req.body;
-        console.log(ids);
-        return res.status(200);
+        const listIds: number[] = JSON.parse(ids)
+
+        const response: QueryResult = await pool.query(`
+        SELECT 
+        CAST(products.id as INTEGER),
+        products.name,
+        CAST(products.price as INTEGER),
+        CAST(products.discount as INTEGER),
+        products.imageurl,
+        CAST(products.subcategoryid as INTEGER),
+        products.description
+    FROM products WHERE id IN (${listIds})
+        `)
+        return res.status(200).json(response.rows);
     } catch (err) {
         next(err);
     }
