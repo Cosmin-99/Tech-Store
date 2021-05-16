@@ -40,3 +40,14 @@ export const addCategory = async (obj: {
     generateFormData(fd, obj);
     return axios.post(endpointURL + "/app/add-category", fd, { headers });
 }
+export const updateCategory = async (data: {
+    name: string;
+    file?: File | null;
+}, id: string | number) => {
+    const fd = new FormData();
+    generateFormData(fd, data);
+    return axios.put(`${endpointURL}/app/update-category/${id}`, fd, { headers });
+}
+export const getCategoryById = async (id: string | number) => {
+    return axios.get<Category>(`${endpointURL}/app/category/${id}`);
+}
