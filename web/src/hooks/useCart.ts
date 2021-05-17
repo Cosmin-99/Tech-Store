@@ -27,30 +27,23 @@ export function useCart(): CartHook {
     const [user, setUser] = useContext(UserContext);
     useLoadData(async () => {
         if (user) {
-            const favoriteCart: any[] = [];
             if (user) {
-                console.log(user);
-
                 const userCart: any[] = JSON.parse(user.cart ?? "[]");
-                console.log(JSON.parse(user.cart ?? "[]"));
+                console.log(user.favorites);
+                const favReq = await getProductsByIdArray({
+                    ids: user.favorites ?? []
+                });
+
+
                 const req = await getProductsByIdArray({
                     ids: userCart.map(el => el.id)
                 })
-                console.log(req.data);
 
+                setFavorite(favReq.data);
                 setCart(req.data.map((prod, i) => ({ ...prod, count: userCart[i].count })))
-                // const s = {
-                //     ids: [];
-                // }
-            } else {
-                setCart([]);
-            }
-            //TODO 
-            // get user cart
-            if (favoriteCart) {
-                setFavorite(favoriteCart);
             } else {
                 setFavorite([]);
+                setCart([]);
             }
         }
     }, [user?.token]);
@@ -66,15 +59,15 @@ export function useCart(): CartHook {
                 ...user, cart: JSON.stringify(cart.map(el => ({
                     count: el.count,
                     id: el.id
-                })))
+                }))),
+                favorites: favorite.map(el => +el.id)
             });
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cart]);
+    }, [cart, favorite]);
     const { loading: updatingUser } = useLoadData(async () => {
         localStorage.setItem(localStorageCartKey, JSON.stringify(cart));
-        console.log({ cart, user });
         if (user && cart.length > 0) {
             const submitValues = {
                 firstname: user.firstname,
@@ -85,15 +78,11 @@ export function useCart(): CartHook {
                     count: el.count,
                     id: el.id
                 }))),
-                favorites: user.favorites ?? []
+                favorites: favorite.map(el => el.id)
             }
-            console.log({
-                submitValues
-            })
-            console.log("Updating user");
             await updateUser(submitValues as any);
         }
-    }, [cart])
+    }, [cart, favorite])
     function emptyCart() {
         setCart([]);
     }
@@ -103,9 +92,6 @@ export function useCart(): CartHook {
         const index = cart.findIndex(el => el.id === product.id);
         if (index !== -1) {
             const newCart = cart.map((cart, i) => i === index ? { ...cart, count: cart.count + 1 } : cart);
-            console.log(user);
-
-
             setCart(newCart);
         } else {
             toast('Product added to cart', {
