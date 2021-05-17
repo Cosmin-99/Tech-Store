@@ -24,7 +24,7 @@ const localStorageCartKey = "cart";
 export function useCart(): CartHook {
     const [favorite, setFavorite] = useState<Product[]>([]);
     const [cart, setCart] = useState<CartProduct[]>([]);
-    const [user,] = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
     useLoadData(async () => {
         if (user) {
             const favoriteCart: any[] = [];
@@ -53,13 +53,25 @@ export function useCart(): CartHook {
                 setFavorite([]);
             }
         }
-    }, [user]);
+    }, [user?.token]);
     useEffect(() => {
         const cart = localStorage.getItem(localStorageCartKey);
         if (cart) {
             setCart(JSON.parse(cart));
         }
     }, []);
+    useEffect(() => {
+        if (user) {
+            setUser({
+                ...user, cart: JSON.stringify(cart.map(el => ({
+                    count: el.count,
+                    id: el.id
+                })))
+            });
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cart]);
     const { loading: updatingUser } = useLoadData(async () => {
         localStorage.setItem(localStorageCartKey, JSON.stringify(cart));
         console.log({ cart, user });
@@ -81,7 +93,7 @@ export function useCart(): CartHook {
             console.log("Updating user");
             await updateUser(submitValues as any);
         }
-    }, [cart, user])
+    }, [cart])
     function emptyCart() {
         setCart([]);
     }

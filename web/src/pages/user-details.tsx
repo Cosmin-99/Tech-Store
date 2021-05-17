@@ -41,7 +41,7 @@ export const UserDetails = () => {
     const classes = useStyles();
     const [user] = useContext(UserContext);
 
-    
+
     const [addresses, setCurrentAddresses] = useState<Address[]>([]);
     const [cards, setCards] = useState<CreditCard[]>([]);
     const [modifyCard, setModifyCard] = useState<CreditCard>(null!);
@@ -107,7 +107,9 @@ export const UserDetails = () => {
                             firstname: user!.firstname,
                             lastname: user!.lastname,
                             adresses: JSON.stringify(addresses),
-                            cards: JSON.stringify([...cards, card])
+                            cards: JSON.stringify([...cards, card]),
+                            cart: user!.cart,
+                            favorites: user!.favorites
                         }
                         await updateUserFn(submitObject);
                         setCards([...cards, card]);
@@ -121,7 +123,9 @@ export const UserDetails = () => {
                                 firstname: user!.firstname,
                                 lastname: user!.lastname,
                                 adresses: JSON.stringify(addresses),
-                                cards: JSON.stringify(newCards)
+                                cards: JSON.stringify(newCards),
+                                cart: user!.cart,
+                                favorites: user!.favorites
                             }
                             await updateUserFn(submitObject);
                             setCards(newCards);
@@ -142,7 +146,9 @@ export const UserDetails = () => {
                                 firstname: user!.firstname,
                                 lastname: user!.lastname,
                                 adresses: JSON.stringify(newAddresses),
-                                cards: JSON.stringify(cards)
+                                cards: JSON.stringify(cards),
+                                cart: user!.cart,
+                                favorites: user!.favorites
                             }
                             await updateUserFn(submitObject);
                             setCurrentAddresses(newAddresses);
@@ -156,7 +162,9 @@ export const UserDetails = () => {
                             firstname: user!.firstname,
                             lastname: user!.lastname,
                             adresses: JSON.stringify([...addresses, addr]),
-                            cards: JSON.stringify(cards)
+                            cards: JSON.stringify(cards),
+                            cart: user!.cart,
+                            favorites: user!.favorites
                         }
                         await updateUserFn(submitObject);
                         setCurrentAddresses([...addresses, addr]);
@@ -178,7 +186,9 @@ export const UserDetails = () => {
                 firstname: user!.firstname,
                 lastname: user!.lastname,
                 adresses: JSON.stringify(addresses),
-                cards: JSON.stringify(newCards)
+                cards: JSON.stringify(newCards),
+                cart: user!.cart,
+                favorites: user!.favorites
             }
             await updateUserFn(submitObject);
             setCards(newCards);
@@ -230,7 +240,9 @@ export const UserDetails = () => {
                 firstname: user!.firstname,
                 lastname: user!.lastname,
                 adresses: JSON.stringify(newAddresses),
-                cards: JSON.stringify(cards)
+                cards: JSON.stringify(cards),
+                cart: user!.cart,
+                favorites: user!.favorites
             }
             await updateUserFn(submitObject);
 
