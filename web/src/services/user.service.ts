@@ -25,6 +25,11 @@ export const sendResetEmail = async (postData: {
 }) => {
     return axios.post(endpointURL + "/auth/reset-password", postData);
 }
+export const resetPassword = async (key: string, obj: {
+    newpassword: string;
+}) => {
+    return axios.post(`${endpointURL}/auth/reset-password/${key}`, obj)
+}
 export const verifyToken = async () => {
     return axios.post(endpointURL + "/auth/verify-token", null, { headers });
 }

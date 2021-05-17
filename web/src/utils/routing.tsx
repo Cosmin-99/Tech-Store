@@ -37,6 +37,7 @@ export const urls = {
     comenzi: () => "/user/comenzi",
     orderDetails: (p: { id: string | number }) => `/user/comenzi/${p.id}`,
     userDetails: () => "/user/details",
+    changePassword: (p: { key: string }) => `/reset-password/${p.key}`,
 
 
     subcategory: (p: { id: string }) => `/shop/category/${p.id}`,

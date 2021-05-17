@@ -6,8 +6,10 @@ import { urls, useRouting } from '../utils/routing';
 import { TechInput } from '../components/TechInput';
 import { Formik, Form } from 'formik';
 import { FormFeedback } from '../components/Feedback';
-import { sendResetEmail } from '../services/user.service';
+import { resetPassword } from '../services/user.service';
+import { RouteComponentProps } from 'react-router';
 import { toast } from 'react-toastify';
+import { isAxiosError } from 'utils/utilFunctions';
 const useStyles = makeStyles((theme) => ({
     button: {
         marginTop: theme.spacing(3),
@@ -21,15 +23,20 @@ const useStyles = makeStyles((theme) => ({
     },
 
 }));
-export const ForgotPassword = () => {
+export const ChangePassword = (p: RouteComponentProps<{ key: string }>) => {
     const classes = useStyles();
     const { routeTo } = useRouting();
     const [errorMessage, setErrorMessage] = useState<string>(null!);
-    const handleSubmit = async (obj: { email: string }) => {
+    const handleSubmit = async (obj: { password: string }) => {
         try {
-            await sendResetEmail(obj);
-            routeTo(urls.shop);
-            toast.dark('An email has been sent to reset your password', {
+            if (!p.match.params.key) {
+                return routeTo(urls.shop);
+            }
+            console.log(obj);
+            await resetPassword(p.match.params.key, {
+                newpassword: obj.password
+            })
+            toast.success('Your password has been changed', {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -38,22 +45,32 @@ export const ForgotPassword = () => {
                 draggable: true,
                 progress: undefined,
             });
+            routeTo(urls.shop);
         } catch (e) {
-            setErrorMessage(e.message);
+            if (isAxiosError<any>(e)) {
+                setErrorMessage(e.response?.data.message);
+            } else {
+                if ("message" in e) {
+                    setErrorMessage(e.message);
+                } else {
+                    setErrorMessage(e);
+                }
+            }
         }
     }
     return <AppForm>
         <React.Fragment>
             <Typography variant="h3" gutterBottom align="left">
-                Forgot Password
+                Reset Password
             </Typography>
-            <Formik<{ email: string }> onSubmit={handleSubmit} initialValues={{ email: '' }}>
+            <Formik<{ password: string }> onSubmit={handleSubmit} initialValues={{ password: '' }}>
                 {({ isSubmitting, handleChange }) => (<Form>
                     <TechInput
-                        label="Email"
-                        name="email"
+                        label="New Password"
+                        name="password"
+                        placeholder="Type new password in here..."
                         onChange={handleChange}
-                        type="email"
+                        type="password"
                         fullWidth
                         required />
                     {errorMessage && <FormFeedback className={classes.feedback} error>
@@ -70,7 +87,7 @@ export const ForgotPassword = () => {
                         type="submit"
                         fullWidth
                     >
-                        {isSubmitting ? "Loading ..." : "Trimite mail de resetare"}
+                        {isSubmitting ? "Loading ..." : "Schimba Parola"}
                     </TechButton>
                 </Form>)}
             </Formik>

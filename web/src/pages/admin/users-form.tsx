@@ -62,7 +62,7 @@ export const UserForm = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Typography color="textSecondary" variant="caption" gutterBottom>
-                                    *password will be generated on server
+                                    *password will be generated on server and a reset password mail will be sent
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>

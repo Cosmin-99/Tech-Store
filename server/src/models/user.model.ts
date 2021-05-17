@@ -3,4 +3,5 @@ export interface CurrentUser extends Express.User {
     firstname: string
     lastname: string
     email: string
+    role: "admin" | "user" | "provider"
 }

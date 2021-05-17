@@ -6,18 +6,25 @@ import getStream from 'into-stream'
 import { ApiError } from '../error/ApiError';
 import { HttpStatusCode } from '../error/HttpStatusCodes';
 import { parse } from 'dotenv/types';
+import { CurrentUser } from '../models/user.model';
 
 interface MulterRequest extends Request {
     file: any;
 }
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const subcategories = await pool.query(`
-        SELECT 
-            P.*,
-            S.name as subcategoryname
-        FROM products as P
-        LEFT JOIN subcategories as S ON S.id = P.subcategoryid  `);
+        const user = req.user as CurrentUser;
+        console.log(user.role)
+        let queryString = `
+            SELECT 
+                P.*,
+                S.name as subcategoryname
+            FROM products as P
+            LEFT JOIN subcategories as S ON S.id = P.subcategoryid`
+        // if (user.role === "provider") {
+        //     queryString += `WHERE P.owner_id = ${user.id}`
+        // }
+        const subcategories = await pool.query(queryString);
         return res.status(200).json(subcategories.rows)
     } catch (e) {
         next(e);

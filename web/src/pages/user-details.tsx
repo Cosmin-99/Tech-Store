@@ -48,6 +48,7 @@ export const UserDetails = () => {
     const [modifyAddress, setModifyAddress] = useState<Address>(null!);
     const [open, setOpen] = React.useState(false);
     const [userIsChecked, setUserIsChecked] = React.useState(false);
+    const [disabled, setDisabled] = React.useState(false);
     const handleCloseDialog = () => {
         setOpen(false);
     };
@@ -69,23 +70,25 @@ export const UserDetails = () => {
         if (!user) {
             return;
         }
+        setDisabled(true);
         await updateUser(submitObject as any);
+        setDisabled(false);
     }, [user]);
     const [componentRender, setComponent] = React.useState("");
     const saveUserDetails = async (obj: {
-        firstName: string;
-        lastName: string;
+        firstname: string;
+        lastname: string;
     }) => {
         const submitObject = {
-            firstname: obj.firstName,
-            lastname: obj.lastName,
+            firstname: obj.firstname,
+            lastname: obj.lastname,
             adresses: JSON.stringify(addresses),
             cards: JSON.stringify(cards),
             cart: user?.cart,
             favorites: user?.favorites
         }
+
         await updateUserFn(submitObject as any);
-        //TODO save in db user
     }
     const handleAddressView = () => {
         setOpen(true);
@@ -310,7 +313,7 @@ export const UserDetails = () => {
                     initialValues={user!}
                     onSubmit={saveUserDetails}
                 >
-                    {({ values, handleChange }) => {
+                    {({ values, handleChange, isSubmitting }) => {
                         return (<Form>
                             <Typography gutterBottom>
                                 Datele mele
@@ -323,7 +326,7 @@ export const UserDetails = () => {
                                                 <Typography>First Name</Typography>
                                             </Grid>
                                             <Grid item sm={6} xs={10}>
-                                                <TextField value={values.firstname} id="firstName" variant="outlined" placeholder="First Name" size="small" fullWidth onChange={handleChange} />
+                                                <TextField value={values.firstname} id="firstname" variant="outlined" placeholder="First Name" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
                                         <Grid container item xs={12} direction="row" alignItems="center">
@@ -331,7 +334,7 @@ export const UserDetails = () => {
                                                 <Typography>Last Name</Typography>
                                             </Grid>
                                             <Grid item sm={6} xs={10}>
-                                                <TextField value={values.lastname} id="lastName" variant="outlined" placeholder="Last Name" size="small" fullWidth onChange={handleChange} />
+                                                <TextField value={values.lastname} id="lastname" variant="outlined" placeholder="Last Name" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
                                         <Grid container item xs={12} direction="row" alignItems="center">
@@ -345,7 +348,7 @@ export const UserDetails = () => {
                                     </Grid>
                                 </CardContent>
                                 <CardActions>
-                                    <Button variant="contained" type="submit" color="primary">
+                                    <Button variant="contained" type="submit" color="primary" disabled={isSubmitting}>
                                         Salveaza
                                      </Button>
                                 </CardActions>
@@ -366,7 +369,7 @@ export const UserDetails = () => {
                         {addresses.map((address, i) => <AddressDisplay address={address} key={i} />)}
                     </CardContent>
                     <CardActions>
-                        <Button variant="contained" color="primary" onClick={handleAddressView}>
+                        <Button variant="contained" color="primary" onClick={handleAddressView} disabled={disabled}>
                             Adauga Adresa
                         </Button>
                     </CardActions>
@@ -385,7 +388,7 @@ export const UserDetails = () => {
                         {/* {addresses.map((address, i) => <AddressDisplay address={address} key={i} />)} */}
                     </CardContent>
                     <CardActions>
-                        <Button variant="contained" color="primary" onClick={handleAddCard}>
+                        <Button variant="contained" color="primary" onClick={handleAddCard} disabled={disabled}>
                             Adauga Card
                         </Button>
                     </CardActions>

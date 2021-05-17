@@ -79,26 +79,26 @@ export const createUsers = async (req: Request, res: Response, next: NextFunctio
             firstName: yup.string().required("First Name is Required"),
             lastName: yup.string().required("Last Name is Required"),
             email: yup.string().email("Invalid Email").required("Email is Required"),
-            password: yup.string().min(3).required("Password is Required"),
+            // password: yup.string().min(3).required("Password is Required"),
         });
-        const { firstname, lastname, email, role, password } = req.body;
+        const { firstName, lastName, email, role, password } = req.body;
 
         await schema.validate({
-            firstname, lastname, email, password
+            firstName, lastName, email, password
         })
         // if this passes it means that the schema is valid , otherwise the error will be catched down
 
         const user: QueryResult = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]);
 
         if (!user.rows.length) {
-            const hashedPassword = await bcrypt.hash(password, 12);
+            const hashedPassword = await bcrypt.hash("1234", 12);
 
             const user = await pool.query(`
         INSERT INTO Users ("firstname", "lastname", "email", "role", "password") VALUES ($1, $2, $3, $4, $5)
         `,
                 [
-                    firstname,
-                    lastname,
+                    firstName,
+                    lastName,
                     email,
                     role,
                     hashedPassword
@@ -108,14 +108,14 @@ export const createUsers = async (req: Request, res: Response, next: NextFunctio
     INSERT INTO ResetPassword ("firstname", "lastname", "email") VALUES ($1, $2, $3)
     `,
                 [
-                    firstname,
-                    lastname,
+                    firstName,
+                    lastName,
                     email
                 ]);
 
             const token = jwt.sign({
-                firstName: firstname,
-                lastName: lastname,
+                firstName: firstName,
+                lastName: lastName,
                 email: email,
                 role: role
             },
@@ -132,18 +132,20 @@ export const createUsers = async (req: Request, res: Response, next: NextFunctio
                 logger: true
             })
 
+            // <a href="localhost:3000/reset-password/${token}">Click Here</a>
+            // <p>Click the follow link to reset your password . <a href="localhost:3000/reset-password/${token}">Click Here</a> to reset your password \n This URL is avaliable 24hrs and can be accessed only once !!!</p>
             //send email with defined transport object
             const info: Promise<Mail> = await transporter.sendMail({
                 from: '"Tech Store support team" <support@techstore.com>',
                 to: email,
                 subject: "Reset Password",
                 text: "Click the follow link to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!",
-                html: "<p>Click the follow link to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!</p>"
+                html: `<p>Click the follow link to reset your password . <a href="http://localhost:3000/reset-password/${token}">Click Here</a> to reset your password \n This URL is avaliable 24hrs and can be accessed only once !!!</p>`
             })
 
             return res.status(200).json({
-                firstName: firstname,
-                lastName: lastname,
+                firstName: firstName,
+                lastName: lastName,
                 email: email,
                 role: role,
                 token

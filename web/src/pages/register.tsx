@@ -44,23 +44,24 @@ export const Register = () => {
             routeTo(urls.shop);
         } catch (error) {
             setError(true);
+            console.log(error);
             setStringError(error.message);
         }
 
     }
-    const validate = (values: User) => {
-        const errors = {} as User;
+    const validate = (values: any) => {
+        const errors = {} as any;
         if (!values.email) {
             errors.email = 'Required'
         }
         if (!values.password) {
             errors.password = 'Required'
         }
-        if (!values.firstname) {
-            errors.firstname = 'Required'
+        if (!values.firstName) {
+            errors.firstName = 'Required'
         }
-        if (!values.lastname) {
-            errors.lastname = 'Required';
+        if (!values.lastName) {
+            errors.lastName = 'Required';
         }
         return errors
     }
@@ -75,12 +76,12 @@ export const Register = () => {
                 </Link>
             </Typography>
         </React.Fragment>
-        <Form onSubmit={handleSubmit} subscription={{ submitting: true }} validate={validate}>
-            {({ handleSubmit, submitting, submitError }) => (
+        <Form onSubmit={handleSubmit} subscription={{ submitting: true }} validate={validate} >
+            {({ handleSubmit, submitting, submitError, }) => (
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6} >
-                            <Field name={keys.firstname}>
+                            <Field name={keys.firstName}>
                                 {({ input, meta }) => (
                                     <div>
                                         <TechInput {...input} label="First Name" meta={meta} fullWidth required />
@@ -89,7 +90,7 @@ export const Register = () => {
                             </Field>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Field name={keys.lastname}>
+                            <Field name={keys.lastName}>
                                 {({ input, meta }) => (
                                     <div>
                                         <TechInput {...input} label="Last Name" meta={meta} fullWidth required />

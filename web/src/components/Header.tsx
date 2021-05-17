@@ -109,7 +109,7 @@ export const Header = () => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [user, setUser] = useContext(UserContext);
-    const canAccesDashboard = useMemo(() => user?.role === "admin", [user]);
+    const canAccesDashboard = useMemo(() => user?.role === "admin" || user?.role === "provider", [user]);
     const cartHook = useContext(CartContext);
     const [anchorEl, setAnchorEl] = React.useState<AnchorElement>(null);
     const [openDrawer, setOpenDrawer] = React.useState<boolean>(false);

@@ -26,6 +26,7 @@ import { Checkout } from 'pages/checkout';
 import { FavoriteProduct } from 'pages/view-favorites';
 import { UserOrders } from 'pages/orders';
 import { OrderDetails } from 'pages/orderDetails';
+import { ChangePassword } from 'pages/change-password';
 const useStyles = makeStyles((theme) => ({
   container: {
     // minHeight: "100vh",
@@ -113,6 +114,10 @@ function App() {
                     exact
                     path={route(urls.orderDetails, ["id"])}
                     component={OrderDetails}
+                  />
+                  <Route
+                    path={route(urls.changePassword, ["key"])}
+                    component={ChangePassword}
                   />
                   <Route
                     path={route(urls.notFound)}

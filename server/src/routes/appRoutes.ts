@@ -19,23 +19,23 @@ appRoutes.post("/add-category", singleFileUpload.single('image'), addCategory)
 appRoutes.put("/update-category/:id", singleFileUpload.single('image'), updateCatergory);
 appRoutes.get("/categories", getCategories);
 appRoutes.get("/category/:id", getCategoryById);
-appRoutes.delete("/category/:id", deleteCategory);
+appRoutes.delete("/category/:id", adminMiddleWare, deleteCategory);
 
 //subcategory
 appRoutes.get("/sub-categories/:id", getSubcategoryByCategoryId);
 appRoutes.get("/sub-categories", tokenMiddleWare, getSubcategories);
 appRoutes.post("/add-subcategory/:id", singleFileUpload.single('image'), addSubcategory);
 appRoutes.put("/subcategory/:id", singleFileUpload.single('image'), updateSubcategory);
-appRoutes.delete("/subcategory/:id", deleteSubcategory);
+appRoutes.delete("/subcategory/:id", adminMiddleWare, deleteSubcategory);
 
 //products
 appRoutes.post("/add-product/:id", providerMiddleWare, singleFileUpload.single('image'), addProduct);
-appRoutes.get("/products/:id",getProductsBySubcategoryId);
+appRoutes.get("/products/:id", getProductsBySubcategoryId);
 appRoutes.put("/products/:id", singleFileUpload.single('image'), updateProduct);
-appRoutes.delete("/products/:id", deleteProduct);
+appRoutes.delete("/products/:id", adminMiddleWare, deleteProduct);
 appRoutes.get("/all-products", tokenMiddleWare, getProducts);
 appRoutes.get("/product/:id", getProductById);
-appRoutes.post("/search",searchProductsByName);
+appRoutes.post("/search", searchProductsByName);
 appRoutes.post("/products-list", getProductsByIdArray);
 
 //provider
