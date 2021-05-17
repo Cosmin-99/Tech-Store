@@ -36,7 +36,7 @@ appRoutes.delete("/products/:id", deleteProduct);
 appRoutes.get("/all-products", tokenMiddleWare, getProducts);
 appRoutes.get("/product/:id", getProductById);
 appRoutes.post("/search",searchProductsByName);
-appRoutes.get("/products-list", getProductsByIdArray);
+appRoutes.post("/products-list", getProductsByIdArray);
 
 //provider
 appRoutes.post("/provider", sendEmailProviders);

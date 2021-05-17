@@ -29,22 +29,10 @@ export const getCurrentSession = async (req: Request, res: Response, next: NextF
     try {
         const email = (req.user as CurrentUser).email;
         const response = await pool.query(`SELECT * from users where email = $1`, [email]);
-        const token = jwt.sign({
-            firstName: response.rows[0].firstname,
-            lastName: response.rows[0].lastname,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            adresses: response.rows[0].adresses,
-            cards: response.rows[0].cards,
-        },
+        const token = jwt.sign(response.rows[0],
             process.env.TOKEN_ENCRYPTION as string)
         return res.status(200).json({
-            firstName: response.rows[0].firstname,
-            lastName: response.rows[0].lastname,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
-            adresses: response.rows[0].adresses,
-            cards: response.rows[0].cards,
+            ...response.rows[0],
             token
         })
     } catch (err) {

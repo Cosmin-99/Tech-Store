@@ -207,7 +207,7 @@ export const MobileHeader = () => {
                         </TechButton>}
                         {user && <div style={{ color: "white" }}>
                             <div>
-                                {user.firstName} {user.lastName}
+                                {user.firstname} {user.lastname}
                             </div>
                             <div>
                                 {user.email}

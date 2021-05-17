@@ -207,7 +207,10 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 export const getProductsByIdArray = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { ids } = req.body;
-        const listIds: number[] = JSON.parse(ids)
+        if (ids.length === 0) {
+            return res.status(200).json([]);
+        }
+        const listIds = ids;
 
         const response: QueryResult = await pool.query(`
         SELECT 
@@ -229,7 +232,7 @@ export const getProductsByIdArray = async (req: Request, res: Response, next: Ne
 export const searchProductsByName = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { searchString } = req.body;
-        
+
         const result: QueryResult = await pool.query(`
         SELECT CAST(products.id as INTEGER),
         products.name,

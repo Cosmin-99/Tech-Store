@@ -30,3 +30,8 @@ export const getProductBySubcategoryId = async (id: string | number) => {
 export const getProductById = async (id: number | string) => {
     return axios.get<Product>(endpointURL + `/app/product/${id}`);
 }
+export const getProductsByIdArray = async (data: {
+    ids: number[]
+}) => {
+    return axios.post<Product[]>(`${endpointURL}/app/products-list`, data);
+}

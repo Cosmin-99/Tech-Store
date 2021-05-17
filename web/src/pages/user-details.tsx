@@ -41,6 +41,7 @@ export const UserDetails = () => {
     const classes = useStyles();
     const [user] = useContext(UserContext);
 
+    
     const [addresses, setCurrentAddresses] = useState<Address[]>([]);
     const [cards, setCards] = useState<CreditCard[]>([]);
     const [modifyCard, setModifyCard] = useState<CreditCard>(null!);
@@ -79,9 +80,11 @@ export const UserDetails = () => {
             firstname: obj.firstName,
             lastname: obj.lastName,
             adresses: JSON.stringify(addresses),
-            cards: JSON.stringify(cards)
+            cards: JSON.stringify(cards),
+            cart: user?.cart,
+            favorites: user?.favorites
         }
-        await updateUser(submitObject as any);
+        await updateUserFn(submitObject as any);
         //TODO save in db user
     }
     const handleAddressView = () => {
@@ -101,8 +104,8 @@ export const UserDetails = () => {
                     onAdd={async card => {
                         // await addCard(card);
                         const submitObject = {
-                            firstname: user!.firstName,
-                            lastname: user!.lastName,
+                            firstname: user!.firstname,
+                            lastname: user!.lastname,
                             adresses: JSON.stringify(addresses),
                             cards: JSON.stringify([...cards, card])
                         }
@@ -115,8 +118,8 @@ export const UserDetails = () => {
                         if (index !== -1) {
                             const newCards = cards.map((c, i) => i === index ? card : c);
                             const submitObject = {
-                                firstname: user!.firstName,
-                                lastname: user!.lastName,
+                                firstname: user!.firstname,
+                                lastname: user!.lastname,
                                 adresses: JSON.stringify(addresses),
                                 cards: JSON.stringify(newCards)
                             }
@@ -136,8 +139,8 @@ export const UserDetails = () => {
                         if (index !== -1) {
                             const newAddresses = addresses.map((address, i) => i === index ? addr : address);
                             const submitObject = {
-                                firstname: user!.firstName,
-                                lastname: user!.lastName,
+                                firstname: user!.firstname,
+                                lastname: user!.lastname,
                                 adresses: JSON.stringify(newAddresses),
                                 cards: JSON.stringify(cards)
                             }
@@ -150,8 +153,8 @@ export const UserDetails = () => {
                     onAdd={async addr => {
                         // await addAddress(addr);
                         const submitObject = {
-                            firstname: user!.firstName,
-                            lastname: user!.lastName,
+                            firstname: user!.firstname,
+                            lastname: user!.lastname,
                             adresses: JSON.stringify([...addresses, addr]),
                             cards: JSON.stringify(cards)
                         }
@@ -172,8 +175,8 @@ export const UserDetails = () => {
             const newCards = cards.filter(s => s !== card);
 
             const submitObject = {
-                firstname: user!.firstName,
-                lastname: user!.lastName,
+                firstname: user!.firstname,
+                lastname: user!.lastname,
                 adresses: JSON.stringify(addresses),
                 cards: JSON.stringify(newCards)
             }
@@ -224,8 +227,8 @@ export const UserDetails = () => {
             const newAddresses = addresses.filter(s => s !== address);
 
             const submitObject = {
-                firstname: user!.firstName,
-                lastname: user!.lastName,
+                firstname: user!.firstname,
+                lastname: user!.lastname,
                 adresses: JSON.stringify(newAddresses),
                 cards: JSON.stringify(cards)
             }
@@ -291,7 +294,7 @@ export const UserDetails = () => {
         </Dialog>
         <Grid container spacing={sm ? 4 : 0}>
             <Grid item xs={12}>
-                <Formik
+                <Formik<any>
                     initialValues={user!}
                     onSubmit={saveUserDetails}
                 >
@@ -308,7 +311,7 @@ export const UserDetails = () => {
                                                 <Typography>First Name</Typography>
                                             </Grid>
                                             <Grid item sm={6} xs={10}>
-                                                <TextField value={values.firstName} id="firstName" variant="outlined" placeholder="First Name" size="small" fullWidth onChange={handleChange} />
+                                                <TextField value={values.firstname} id="firstName" variant="outlined" placeholder="First Name" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
                                         <Grid container item xs={12} direction="row" alignItems="center">
@@ -316,7 +319,7 @@ export const UserDetails = () => {
                                                 <Typography>Last Name</Typography>
                                             </Grid>
                                             <Grid item sm={6} xs={10}>
-                                                <TextField value={values.lastName} id="lastName" variant="outlined" placeholder="Last Name" size="small" fullWidth onChange={handleChange} />
+                                                <TextField value={values.lastname} id="lastName" variant="outlined" placeholder="Last Name" size="small" fullWidth onChange={handleChange} />
                                             </Grid>
                                         </Grid>
                                         <Grid container item xs={12} direction="row" alignItems="center">

@@ -2,11 +2,12 @@ export interface User {
     id: number;
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     adresses?: string;
     cards?: string;
-    cart?: number[];
+    cart?: string;
+    favorites?: number[]
     token: string;
     role: "user" | "admin" | "provider";
 }

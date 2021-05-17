@@ -1,6 +1,6 @@
 import { makeStyles, Chip, Card, CardContent, CardActions } from '@material-ui/core';
 import { CartContext } from 'contexts/cartContext';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Product } from '../models/Product';
 import { urls, useRouting } from '../utils/routing';
 import { TechButton } from './TechButton';
@@ -56,10 +56,6 @@ export const ProductDisplay = (p: {
     if (discount) {
         percent = 100 - Math.round((100 * (price - discount)) / price)
     }
-    const [disabled, setDisabled] = useState(false);
-    function sleep(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
     return <div className={classes.productDisplay}>
         <Chip label={`-${percent}%`} className={classes.chipDiscount} style={{ backgroundColor: discount ? "" : "transparent", color: discount ? "" : "transparent" }} variant="default" />
         <Card>
@@ -88,13 +84,10 @@ export const ProductDisplay = (p: {
                     fullWidth
                     size="large"
                     color="primary"
-                    disabled={disabled}
+                    disabled={cartHook.updatingUser}
                     variant="contained"
                     onClick={async () => {
                         cartHook.add(product);
-                        setDisabled(true);
-                        await sleep(1000);
-                        setDisabled(false);
                     }}
                 >
                     Adauga in cos

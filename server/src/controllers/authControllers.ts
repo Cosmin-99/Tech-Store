@@ -95,21 +95,11 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
             next(new ApiError(HttpStatusCode.BadGateway, "Invalid username of password"))
             return;
         }
-        const token = jwt.sign({
-            firstName: response.rows[0].firstname,
-            email: response.rows[0].email,
-            lastName: response.rows[0].lastname,
-            role: response.rows[0].role,
-            adresses: response.rows[0].adresses,
-            cards: response.rows[0].cards,
-        },
+        const token = jwt.sign(response.rows[0],
             process.env.TOKEN_ENCRYPTION as string)
 
         return res.status(200).json({
-            firstName: response.rows[0].firstname,
-            lastName: response.rows[0].lastname,
-            email: response.rows[0].email,
-            role: response.rows[0].role,
+            ...response.rows[0],
             token
         })
 

@@ -23,7 +23,7 @@ const initialValues = {
     lastName: "",
     email: "",
     role: "user" as User["role"],
-}
+} as any;
 export const UserForm = () => {
     const [error, setError] = useState("");
     const {

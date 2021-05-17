@@ -30,7 +30,7 @@ export const Register = () => {
     const [stringError, setStringError] = useState("");
 
     const { routeTo } = useRouting();
-    const keys = getKeys<Omit<User, "adresses" | "cards" | "cart" | "id">>({
+    const keys = getKeys<any>({
         email: 1,
         firstName: 1,
         lastName: 1,
@@ -56,11 +56,11 @@ export const Register = () => {
         if (!values.password) {
             errors.password = 'Required'
         }
-        if (!values.firstName) {
-            errors.firstName = 'Required'
+        if (!values.firstname) {
+            errors.firstname = 'Required'
         }
-        if (!values.lastName) {
-            errors.lastName = 'Required';
+        if (!values.lastname) {
+            errors.lastname = 'Required';
         }
         return errors
     }
@@ -80,7 +80,7 @@ export const Register = () => {
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6} >
-                            <Field name={keys.firstName}>
+                            <Field name={keys.firstname}>
                                 {({ input, meta }) => (
                                     <div>
                                         <TechInput {...input} label="First Name" meta={meta} fullWidth required />
@@ -89,7 +89,7 @@ export const Register = () => {
                             </Field>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <Field name={keys.lastName}>
+                            <Field name={keys.lastname}>
                                 {({ input, meta }) => (
                                     <div>
                                         <TechInput {...input} label="Last Name" meta={meta} fullWidth required />

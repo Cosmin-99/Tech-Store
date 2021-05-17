@@ -96,8 +96,8 @@ export const UserProfile = () => {
                                     title="cards"
                                 /></Grid>
                             <Grid item xs={4}>
-                                <Typography variant="body1" > Prenume: {user.firstName} </Typography>
-                                <Typography variant="body1" > Nume: {user.lastName} </Typography>
+                                <Typography variant="body1" > Prenume: {user.firstname} </Typography>
+                                <Typography variant="body1" > Nume: {user.lastname} </Typography>
                                 <Typography variant="body1" > Email: {user.email} </Typography>
                             </Grid>
                             <Grid item xs={12}>
