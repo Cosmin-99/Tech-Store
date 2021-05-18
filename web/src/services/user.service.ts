@@ -18,7 +18,7 @@ export const userRegister = async (user: User) => {
     return axios.post(endpointURL + "/auth/register", user);
 }
 export const loginWithGoogle = async (tokenId: string) => {
-    return axios.post(endpointURL + "/auth/google-login", { tokenId });
+    return axios.post<User>(endpointURL + "/auth/google-login", { tokenId });
 }
 export const sendResetEmail = async (postData: {
     email: string
@@ -34,7 +34,7 @@ export const verifyToken = async () => {
     return axios.post(endpointURL + "/auth/verify-token", null, { headers });
 }
 export const updateUser = async (user: Omit<User, "password">) => {
-    return axios.post(endpointURL + "/app/user/update-user", user, { headers })
+    return axios.post<User>(endpointURL + "/app/user/update-user", user, { headers })
 }
 export const getCurrentSession = async () => {
     return axios.get<User>(endpointURL + "/app/user/current-session", { headers });

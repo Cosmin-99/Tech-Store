@@ -15,11 +15,9 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 
         const { firstname, lastname, adresses, cards, cart, favorites } = req.body;
         const email = (req.user as CurrentUser).email;
-        const updateUserFields: QueryResult = await pool.query('UPDATE Users SET "firstname"=$1, "lastname"=$2,"adresses"=$3,"cards"=$4, "cart"=$5, "favorites"=$6 WHERE email = $7',
+        const updateUserFields: QueryResult = await pool.query('UPDATE Users SET "firstname"=$1, "lastname"=$2,"adresses"=$3,"cards"=$4, "cart"=$5, "favorites"=$6 WHERE email = $7 RETURNING *',
             [firstname, lastname, adresses, cards, cart, favorites, email])
-        return res.status(200).json({
-            message: "User updated succesfully !!!"
-        });
+        return res.status(200).json(updateUserFields.rows[0]);
 
     } catch (err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));

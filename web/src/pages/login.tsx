@@ -1,5 +1,5 @@
 import { Typography, Link, FormControlLabel, Checkbox, IconButton, SvgIcon, makeStyles } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { AppForm } from '../components/AppForm';
 import { TechButton } from '../components/TechButton';
@@ -36,13 +36,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(2),
     },
 }));
-const responseGoogle = async (response: GoogleLoginResponse) => {
-    if ((response as any).error) {
 
-    } else {
-        await loginWithGoogle(response.tokenId);
-    }
-}
 export const Login = () => {
     useTitle("Login");
     type LoginUser = Pick<User, "email" | "password">;
@@ -57,7 +51,19 @@ export const Login = () => {
         email: 1,
         password: 1,
     });
+    const responseGoogle = useCallback(async (response: GoogleLoginResponse) => {
+        if ((response as any).error) {
 
+        } else {
+            const req = await loginWithGoogle(response.tokenId);
+
+            storeUserInStorage(req.data);
+            setUserContext(req.data);
+            headers.Authorization = `Bearer ${req.data.token}`;
+            routeTo(urls.shop);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setUserContext]);
     const handleSubmit = async (o: LoginUser) => {
         try {
             const user = await userLogin(o.email, o.password)

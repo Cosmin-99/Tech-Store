@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 export const UserDetails = () => {
     useTitle("My Details");
     const classes = useStyles();
-    const [user] = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
 
 
     const [addresses, setCurrentAddresses] = useState<Address[]>([]);
@@ -71,7 +71,8 @@ export const UserDetails = () => {
             return;
         }
         setDisabled(true);
-        await updateUser(submitObject as any);
+        const req = await updateUser(submitObject as any);
+        setUser(req.data);
         setDisabled(false);
     }, [user]);
     const [componentRender, setComponent] = React.useState("");

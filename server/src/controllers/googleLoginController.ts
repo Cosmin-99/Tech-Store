@@ -18,18 +18,11 @@ export const googleLogin = async (req: Request, res: Response): Promise<Response
             const user = await pool.query("SELECT * FROM Users WHERE email LIKE $1", [email]); //I'm looking for the user in the database 
 
             if (user.rows.length) {// if he is already in database
-                const token = jwt.sign({// create a login token
-                    email: user.rows[0].email,
-                    firstName: user.rows[0].firstname,
-                    lastName: user.rows[0].lastname
-                },
+                const token = jwt.sign(user.rows[0],
                     process.env.TOKEN_ENCRYPTION as string)
 
                 return res.status(200).json({
-                    firstName: user.rows[0].firstname,
-                    lastName: user.rows[0].lastname,
-                    email: email,
-                    role: user.rows[0].role,
+                    ...user.rows[0],
                     token
                 })
 
@@ -38,7 +31,7 @@ export const googleLogin = async (req: Request, res: Response): Promise<Response
                 const lastName = given_name;
                 const password = email as string + process.env.TOKEN_ENCRYPTION as string;
                 const hashedPassword = await bcrypt.hash(password, 12);
-                const role="user"
+                const role = "user"
                 console.log(password);
                 console.log(hashedPassword);
 
