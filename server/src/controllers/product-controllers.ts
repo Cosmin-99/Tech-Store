@@ -214,7 +214,19 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
             products.description
         FROM products WHERE id = $1`, [id]);
 
-        return res.status(200).json(response.rows[0])
+        const subcategories: QueryResult = await pool.query(`
+        SELECT 
+            CAST(subcategories.id as INTEGER),
+            subcategories.name,
+            subcategories.imageurl,
+            CAST(subcategories.categoryid as INTEGER),
+        FROM subcategories WHERE id = $1`, [response.rows[0].subcategoryid])
+
+        return res.status(200).json({
+            product: response.rows[0],
+            subcategory: subcategories.rows[0]
+        });
+
     } catch (err) {
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
