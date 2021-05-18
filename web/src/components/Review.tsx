@@ -42,7 +42,7 @@ export const Review = (p: {
             <List disablePadding>
                 {products.map((product) => (
                     <ListItem className={classes.listItem} key={product.name}>
-                        <ListItemText primary={`${product.name} * ${product.count}`} />
+                        <ListItemText primary={`${product.count}x ${product.name} `} />
                         <Typography variant="body2">{product.price * product.count} Lei</Typography>
                     </ListItem>
                 ))}

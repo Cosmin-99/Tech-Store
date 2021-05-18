@@ -14,17 +14,18 @@ interface MulterRequest extends Request {
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.user as CurrentUser;
-      
+
         const userInfo: QueryResult = await pool.query(`SELECT CAST(users.id as INTEGER) FROM users WHERE email = $1`, [user.email])
         let queryString = `
             SELECT 
                 P.*,
                 S.name as subcategoryname
             FROM products as P
-            LEFT JOIN subcategories as S ON S.id = P.subcategoryid`
+            LEFT JOIN subcategories as S ON S.id = P.subcategoryid `
         if (user.role === "provider") {
-            queryString += `WHERE P.owner_id = ${userInfo.rows[0].id}`
+            queryString += ` WHERE P.owner_id = ${userInfo.rows[0].id}`
         }
+        console.log(queryString);
         const subcategories = await pool.query(queryString);
         return res.status(200).json(subcategories.rows)
     } catch (e) {
@@ -219,12 +220,13 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
             CAST(subcategories.id as INTEGER),
             subcategories.name,
             subcategories.imageurl,
-            CAST(subcategories.categoryid as INTEGER),
+            CAST(subcategories.categoryid as INTEGER)
         FROM subcategories WHERE id = $1`, [response.rows[0].subcategoryid])
 
         return res.status(200).json({
-            product: response.rows[0],
-            subcategory: subcategories.rows[0]
+            // product: response.rows[0],
+            subcategory: subcategories.rows[0],
+            ...response.rows[0]
         });
 
     } catch (err) {

@@ -83,7 +83,18 @@ export function useCart(): CartHook {
             await updateUser(submitValues as any);
         }
     }, [cart, favorite])
-    function emptyCart() {
+    async function emptyCart() {
+        if (user && cart.length > 0) {
+            const submitValues = {
+                firstname: user.firstname,
+                lastname: user.lastname,
+                adresses: user.adresses ?? "[]",
+                cards: user.cards ?? "[]",
+                cart: "[]",
+                favorites: favorite.map(el => el.id)
+            }
+            await updateUser(submitValues as any);
+        }
         setCart([]);
     }
     function add(p: Product) {

@@ -11,7 +11,7 @@ import { useLoadData } from "hooks/useLoadData";
 import { getAllSubcategories } from "services/categories.service";
 import { Category } from "models/Category";
 import { LoadingComponent } from "components/LoadingComponent";
-import { addProduct, getProductById } from "services/products.service";
+import { addProduct, getProductById, updateProduct } from "services/products.service";
 import { isAxiosError } from "utils/utilFunctions";
 import { adminUrls, useRouting } from "utils/routing";
 import AddIcon from '@material-ui/icons/Add';
@@ -80,11 +80,12 @@ export const ProductForm = (p: RouteComponentProps<{ id: string }>) => {
                     .stringify(values
                         .description
                         .reduce((acc, current) => ({ ...acc, [current[0]]: current[1] }), {}));
-                
+
 
                 const id = p.match.params.id;
                 if (id) {
                     //TODO update product
+                    await updateProduct({ ...values, description: stringifedDetails }, id);
                 } else {
                     await addProduct({ ...values, description: stringifedDetails });
                 }

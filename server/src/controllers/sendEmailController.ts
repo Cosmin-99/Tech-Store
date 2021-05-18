@@ -41,8 +41,7 @@ export const sendEmail = async (req: Request, res: Response) => {
             from: '"Tech Store support team" <support@techstore.com>',
             to: email,
             subject: "Reset Password",
-            text: "Click the follow link to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!",
-            html: `<p>Click the follow link to reset your password . <a href="http://localhost:3000/reset-password/${urlToken}">Click Here</a> to reset your password \n This URL is avaliable 24hrs and can be accessed only once !!!</p>
+            html: `<p>Click the follow link to reset your password . <a href="http://localhost:3000/reset-password/${urlToken}">Click Here</a> to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!</p>
             `
             // html: "<p>Click the follow link to reset your password . This URL is avaliable 24hrs and can be accessed only once !!!</p>"
         })

@@ -11,6 +11,11 @@ export const addProduct = async (product: ProductForm) => {
     generateFormData(fd, product);
     return axios.post(endpointURL + `/app/add-product/${product.subcategoryid}`, fd, { headers });
 }
+export const updateProduct = async (product: ProductForm, id: number | string) => {
+    const fd = new FormData();
+    generateFormData(fd, product);
+    return axios.put(`${endpointURL}/app/products/${id}`, fd, { headers });
+}
 export const getAllProducts = async () => {
     return axios.get<ProductsList[]>(endpointURL + `/app/all-products`, { headers });
 }
