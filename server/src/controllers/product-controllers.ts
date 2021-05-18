@@ -14,16 +14,17 @@ interface MulterRequest extends Request {
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.user as CurrentUser;
-        console.log(user.role)
+      
+        const userInfo: QueryResult = await pool.query(`SELECT CAST(users.id as INTEGER) FROM users WHERE email = $1`, [user.email])
         let queryString = `
             SELECT 
                 P.*,
                 S.name as subcategoryname
             FROM products as P
             LEFT JOIN subcategories as S ON S.id = P.subcategoryid`
-        // if (user.role === "provider") {
-        //     queryString += `WHERE P.owner_id = ${user.id}`
-        // }
+        if (user.role === "provider") {
+            queryString += `WHERE P.owner_id = ${userInfo.rows[0].id}`
+        }
         const subcategories = await pool.query(queryString);
         return res.status(200).json(subcategories.rows)
     } catch (e) {
@@ -40,6 +41,7 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
         } = req.body;
         console.log(description);
         const id: number = parseInt(req.params.id);
+        const user = req.user as CurrentUser;
 
         const azureStorageConfig = {
             accountName: process.env.ACCOUNT_NAME as string,
@@ -73,7 +75,14 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
         });
 
         const imageURL = `${azureStorageConfig.blobURL}/${blobName}`
-        const response: QueryResult = await pool.query('INSERT INTO Products ("name", "price", "discount", "imageurl", "subcategoryid","description") VALUES ($1, $2, $3, $4, $5,$6)', [name, price, discount, imageURL, id, description]);
+
+        const userInfo: QueryResult = await pool.query("SELECT * FROM Users WHERE email = $1", [user.email]);
+
+        if (userInfo.rows[0].role === "provider") {
+            const response: QueryResult = await pool.query('INSERT INTO Products ("name", "price", "discount", "imageurl", "subcategoryid","description", "owner_id") VALUES ($1, $2, $3, $4, $5,$6,$7)', [name, price, discount, imageURL, id, description, +userInfo.rows[0].id]);
+        } else {
+            const response: QueryResult = await pool.query('INSERT INTO Products ("name", "price", "discount", "imageurl", "subcategoryid","description") VALUES ($1, $2, $3, $4, $5,$6)', [name, price, discount, imageURL, id, description]);
+        }
 
         return res.status(200).json({
             filename: blobName,
