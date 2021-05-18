@@ -14,18 +14,17 @@ interface MulterRequest extends Request {
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.user as CurrentUser;
-
+      
         const userInfo: QueryResult = await pool.query(`SELECT CAST(users.id as INTEGER) FROM users WHERE email = $1`, [user.email])
         let queryString = `
             SELECT 
                 P.*,
                 S.name as subcategoryname
             FROM products as P
-            LEFT JOIN subcategories as S ON S.id = P.subcategoryid `
+            LEFT JOIN subcategories as S ON S.id = P.subcategoryid`
         if (user.role === "provider") {
-            queryString += ` WHERE P.owner_id = ${userInfo.rows[0].id}`
+            queryString += `WHERE P.owner_id = ${userInfo.rows[0].id}`
         }
-        console.log(queryString);
         const subcategories = await pool.query(queryString);
         return res.status(200).json(subcategories.rows)
     } catch (e) {
@@ -147,7 +146,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
             containerName: process.env.CONTAINER_NAME as string
         }
 
-        const { name, price, discount, description } = req.body;
+        const { name, price, discount, description, subcategoryid } = req.body;
         console.log(description);
         const id: number = parseInt(req.params.id);
         const request = (req as MulterRequest)
@@ -167,15 +166,15 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
             });
 
             const imageURL: string = `${azureStorageConfig.blobURL}/${blobName}`
-            const response: QueryResult = await pool.query('UPDATE products SET "name" = $1, "price" = $2, "discount" = $3, "imageurl" = $4,"description"= $5 WHERE id = $6',
-                [name, price, discount, imageURL, description, id]);
+            const response: QueryResult = await pool.query('UPDATE products SET "name" = $1, "price" = $2, "discount" = $3, "imageurl" = $4,"description"= $5, "subcategoryid"= $6 WHERE id = $7',
+                [name, price, discount, imageURL, description, subcategoryid, id]);
 
             return res.status(200).json({
                 message: "Product updated succesfully !!!"
             })
         } else {
-            const response: QueryResult = await pool.query('UPDATE products SET "name" = $1, "price" = $2, "discount" = $3 WHERE id = $4',
-                [name, price, discount, id]);
+            const response: QueryResult = await pool.query('UPDATE products SET "name" = $1, "price" = $2, "discount" = $3, "description"= $4, "subcategoryid"= $5 WHERE id = $6',
+                [name, price, discount, description, subcategoryid, id]);
 
             return res.status(200).json({
                 message: "Product updated succesfully !!!"
@@ -220,13 +219,12 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
             CAST(subcategories.id as INTEGER),
             subcategories.name,
             subcategories.imageurl,
-            CAST(subcategories.categoryid as INTEGER)
+            CAST(subcategories.categoryid as INTEGER),
         FROM subcategories WHERE id = $1`, [response.rows[0].subcategoryid])
 
         return res.status(200).json({
-            // product: response.rows[0],
-            subcategory: subcategories.rows[0],
-            ...response.rows[0]
+            product: response.rows[0],
+            subcategory: subcategories.rows[0]
         });
 
     } catch (err) {
