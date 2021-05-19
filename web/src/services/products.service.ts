@@ -20,7 +20,7 @@ export const getAllProducts = async () => {
     return axios.get<ProductsList[]>(endpointURL + `/app/all-products`, { headers });
 }
 export const deleteProduct = async (id: string | number) => {
-    return axios.delete(endpointURL + `/app/products/${id}`);
+    return axios.delete(endpointURL + `/app/products/${id}`, { headers });
 }
 export const getProductBySubcategoryId = async (id: string | number) => {
     return axios.get<{

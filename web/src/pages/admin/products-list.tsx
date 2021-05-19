@@ -4,7 +4,7 @@ import { Avatar } from "@material-ui/core"
 import { ProductsList as IProductList } from "models/ProductsList";
 import { useState } from "react";
 import { deleteProduct, getAllProducts } from "services/products.service";
-import { adminUrls, useRouting } from "utils/routing";
+import { adminUrls, urls, useRouting } from "utils/routing";
 import { LoadingComponent } from "components/LoadingComponent"
 
 export const ProductsList = () => {
@@ -28,7 +28,11 @@ export const ProductsList = () => {
                         variant="rounded"
                         style={{
                             width: "100px",
-                            height: "100px"
+                            height: "100px",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            routeTo(urls.product, { id: rowData.id.toString() })
                         }}
                         src={rowData.imageurl}
                     />

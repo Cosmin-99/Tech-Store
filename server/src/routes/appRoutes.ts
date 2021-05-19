@@ -32,7 +32,7 @@ appRoutes.delete("/subcategory/:id", adminMiddleWare, deleteSubcategory);
 appRoutes.post("/add-product/:id",tokenMiddleWare, providerMiddleWare, singleFileUpload.single('image'), addProduct);
 appRoutes.get("/products/:id", getProductsBySubcategoryId);
 appRoutes.put("/products/:id", singleFileUpload.single('image'), updateProduct);
-appRoutes.delete("/products/:id", adminMiddleWare, deleteProduct);
+appRoutes.delete("/products/:id", providerMiddleWare, deleteProduct);
 appRoutes.get("/all-products", tokenMiddleWare, getProducts);
 appRoutes.get("/product/:id", getProductById);
 appRoutes.post("/search", searchProductsByName);

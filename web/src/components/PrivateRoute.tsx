@@ -1,5 +1,6 @@
 import { FC, useContext } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UserContext } from "../contexts/userContext";
 import { urls } from "../utils/routing";
 export const PrivateRoute: FC<RouteProps> = (props) => {
@@ -11,6 +12,7 @@ export const PrivateRoute: FC<RouteProps> = (props) => {
         {user ?
             (children) : (
                 <>
+                    {toast("You need to be logged in to acces this page")}
                     <Redirect
                         to={urls.shop()}
                     />

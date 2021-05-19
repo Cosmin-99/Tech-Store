@@ -74,6 +74,7 @@ export const UserDetails = () => {
         const req = await updateUser(submitObject as any);
         setUser(req.data);
         setDisabled(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
     const [componentRender, setComponent] = React.useState("");
     const saveUserDetails = async (obj: {

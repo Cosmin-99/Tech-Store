@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from 'express'
+import { Response, Request, NextFunction, response } from 'express'
 import { pool } from '../database/database'
 import { QueryResult } from 'pg';
 import azureStorage, { BlobService } from 'azure-storage'
@@ -190,13 +190,28 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: number = parseInt(req.params.id)
+        const user = req.user as CurrentUser;
+        if (user.role === "provider") {
+            const userInfo = await pool.query("SELECT * FROM Users WHERE email = $1", [user.email]);
+            const owner_id = userInfo.rows[0].id;
+            const response = await pool.query(`SELECT * FROM products WHERE id = $1 AND owner_id = $2`, [id, owner_id]);
+            if (response.rowCount === 0) {
+                return res.status(401);
+            } else {
+                const response: QueryResult = await pool.query("DELETE FROM products WHERE id = $1", [id]);
+                return res.status(200).json({
+                    message: "Product deleted !!!"
+                })
+            }
+        } else {
+            const response: QueryResult = await pool.query("DELETE FROM products WHERE id = $1", [id]);
 
-        const response: QueryResult = await pool.query("DELETE FROM products WHERE id = $1", [id]);
-
-        return res.status(200).json({
-            message: "Product deleted !!!"
-        })
+            return res.status(200).json({
+                message: "Product deleted !!!"
+            })
+        }
     } catch (err) {
+        console.log(err);
         next(new ApiError(HttpStatusCode.BadRequest, err));
     }
 }

@@ -64,20 +64,24 @@ export const ViewProduct = (p: RouteComponentProps<{ id: string }>) => {
     const sm = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
     const cartHook = useContext(CartContext);
     const { loading } = useLoadData(async () => {
-        const req = await getProductById(p.match.params.id)
-        const product = req.data;
-        if (!product) {
-            routeTo(urls.shop);
-            return;
+        try {
+            const req = await getProductById(p.match.params.id)
+            const product = req.data;
+            if (!product) {
+                routeTo(urls.shop);
+                return;
+            }
+            setPageTitle(product.name);
+            const description = product.description;
+            if (description) {
+                setDetails(JSON.parse(description));
+            } else {
+                setDetails(null!);
+            }
+            setProduct(product);
+        }catch(e){
+            routeTo(urls.shop)
         }
-        setPageTitle(product.name);
-        const description = product.description;
-        if (description) {
-            setDetails(JSON.parse(description));
-        } else {
-            setDetails(null!);
-        }
-        setProduct(product);
     }, [p.match.params.id]);
     const isFavorite = useMemo(() => {
         if (!product) {
